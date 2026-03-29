@@ -1,4 +1,4 @@
-﻿using BannerKings.Behaviours;
+using BannerKings.Behaviours;
 using BannerKings.Managers.Items;
 using BannerKings.Settings;
 using HarmonyLib;
@@ -29,6 +29,7 @@ using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using static TaleWorlds.CampaignSystem.Issues.EscortMerchantCaravanIssueBehavior;
 
+using BannerKings.Utils;
 namespace BannerKings.Patches
 {
     internal class FixesPatches
@@ -59,7 +60,7 @@ namespace BannerKings.Patches
                 if (!mapScreenActionIsEnabledWithReason)
                     __instance.CreateArmyHint.HintText = hintText;
 
-                __instance.CreateArmyHint.HintText = TextObject.Empty;
+                __instance.CreateArmyHint.HintText = TextObject.GetEmpty();
 
                 return false;
             }
@@ -117,30 +118,31 @@ namespace BannerKings.Patches
             }
         }
 
-        [HarmonyPatch(typeof(GarrisonTroopsCampaignBehavior))]
-        internal class GarrisonTroopsCampaignBehaviorPatches
-        {
-            [HarmonyPrefix]
-            [HarmonyPatch("GetGarrisonLeaveOrTakeDataOfParty")]
-            private static bool GetGarrisonLeaveOrTakeDataOfPartyPrefix(MobileParty mobileParty, ref ValueTuple<int, int> __result)
-            {
-                Settlement currentSettlement = mobileParty.CurrentSettlement;
-                int num = TaleWorlds.CampaignSystem.Campaign.Current.Models.SettlementGarrisonModel
-                    .FindNumberOfTroopsToLeaveToGarrison(mobileParty, currentSettlement);
-                int item = 0;
-                if (mobileParty.LeaderHero != null && currentSettlement != null)
-                {
-                    if (num <= 0 && mobileParty.LeaderHero.Clan == currentSettlement.OwnerClan && !mobileParty.IsWageLimitExceeded())
-                    {
-                        item = TaleWorlds.CampaignSystem.Campaign.Current.Models.SettlementGarrisonModel
-                            .FindNumberOfTroopsToTakeFromGarrison(mobileParty, mobileParty.CurrentSettlement, 0f);
-                    }
-                }
-                
-                __result = new ValueTuple<int, int>(num, item);
-                return false;
-            }
-        }
+        // Commented out - GetGarrisonLeaveOrTakeDataOfParty removed in 1.3.x
+        //[HarmonyPatch(typeof(GarrisonTroopsCampaignBehavior))]
+        //internal class GarrisonTroopsCampaignBehaviorPatches
+        //{
+        //    [HarmonyPrefix]
+        //    [HarmonyPatch("GetGarrisonLeaveOrTakeDataOfParty")]
+        //    private static bool GetGarrisonLeaveOrTakeDataOfPartyPrefix(MobileParty mobileParty, ref ValueTuple<int, int> __result)
+        //    {
+        //        Settlement currentSettlement = mobileParty.CurrentSettlement;
+        //        int num = TaleWorlds.CampaignSystem.Campaign.Current.Models.SettlementGarrisonModel
+        //            .FindNumberOfTroopsToLeaveToGarrison(mobileParty, currentSettlement);
+        //        int item = 0;
+        //        if (mobileParty.LeaderHero != null && currentSettlement != null)
+        //        {
+        //            if (num <= 0 && mobileParty.LeaderHero.Clan == currentSettlement.OwnerClan && !mobileParty.IsWageLimitExceeded())
+        //            {
+        //                item = TaleWorlds.CampaignSystem.Campaign.Current.Models.SettlementGarrisonModel
+        //                    .FindNumberOfTroopsToTakeFromGarrison(mobileParty, mobileParty.CurrentSettlement, 0f);
+        //            }
+        //        }
+        //
+        //        __result = new ValueTuple<int, int>(num, item);
+        //        return false;
+        //    }
+        //}
 
         [HarmonyPatch(typeof(CompanionsCampaignBehavior))]
         internal class CompanionsCampaignBehaviorPatches
@@ -190,14 +192,10 @@ namespace BannerKings.Patches
 
             [HarmonyPrefix]
             [HarmonyPatch("GetAccessiblePointNearPosition")]
-            private static bool GetAccessiblePointNearPosition(MapScene __instance, Vec2 position, float radius, ref Vec2 __result)
+            private static bool GetAccessiblePointNearPosition(MapScene __instance, CampaignVec2 pos, float radius, ref CampaignVec2 __result)
             {
-                Vec2 vector = MBMapScene.GetAccessiblePointNearPosition(__instance.Scene, position, radius);
-                if (!PartyBase.IsPositionOkForTraveling(vector))
-                {
-                    vector = MBMapScene.GetAccessiblePointNearPosition(__instance.Scene, position, 1f);
-                }
-                __result = vector;
+                Vec2 vector = MBMapScene.GetAccessiblePointNearPosition(__instance.Scene, pos.ToVec2(), true, radius);
+                __result = new CampaignVec2(vector, false);
                 return true;
             }
         }
@@ -259,8 +257,8 @@ namespace BannerKings.Patches
             [HarmonyPatch("ThinkAboutSpawningBanditParty")]
             private static bool ThinkAboutSpawningBanditPartyPrefix()
             {
-                Settlement closestHideout = SettlementHelper.FindNearestHideout((Settlement x) => x.IsActive, null);
-                Clan clan = Clan.BanditFactions.FirstOrDefault((Clan t) => t.Culture == closestHideout.Culture);
+                Hideout closestHideout = Compat.FindNearestHideout((Settlement x) => x.IsActive, null);
+                Clan clan = closestHideout != null ? Clan.BanditFactions.FirstOrDefault((Clan t) => t.Culture == closestHideout.Settlement.Culture) : null;
 
                 return clan != null;
             }
@@ -294,7 +292,7 @@ namespace BannerKings.Patches
                 float strengthThresholdForNonMutualWarsToBeIgnoredToJoinKingdom = TaleWorlds.CampaignSystem.Campaign.Current.Models.DiplomacyModel.GetStrengthThresholdForNonMutualWarsToBeIgnoredToJoinKingdom(offerKingdom);
                 foreach (Kingdom kingdom in Kingdom.All)
                 {
-                    if (Clan.PlayerClan.MapFaction.IsAtWarWith(kingdom) && kingdom.TotalStrength > strengthThresholdForNonMutualWarsToBeIgnoredToJoinKingdom)
+                    if (Clan.PlayerClan.MapFaction.IsAtWarWith(kingdom) && kingdom.CurrentTotalStrength > strengthThresholdForNonMutualWarsToBeIgnoredToJoinKingdom)
                     {
                         playerWars.Add(kingdom);
                     }
@@ -431,53 +429,15 @@ namespace BannerKings.Patches
             }*/
         }
 
-        [HarmonyPatch(typeof(LordPartyComponent))]
-        internal class LordPartyComponentPatches
-        {
-            [HarmonyPrefix]
-            [HarmonyPatch("InitializeLordPartyProperties")]
-            private static bool InitializeLordPartyProperties(LordPartyComponent __instance, MobileParty mobileParty, Vec2 position, float spawnRadius, Settlement spawnSettlement)
-            {
-                Hero Owner = __instance.Owner;
-                mobileParty.AddElementToMemberRoster(Owner.CharacterObject, 1, insertAtFront: true);
-                mobileParty.ActualClan = Owner.Clan;
-                int troopNumberLimit = 0;
-                if (Owner != Hero.MainHero && Owner.Clan != Clan.PlayerClan)
-                {
-                    float factor = (Owner.Clan.IsRebelClan ? BannerKingsSettings.Instance.RebelSpawnSize
-                        : (Owner.Clan.IsClanTypeMercenary ? BannerKingsSettings.Instance.MercenarySpawnSize
-                            : BannerKingsSettings.Instance.NobleSpawnSize));
-                    if (BannerKingsSettings.Instance.SpawnSizeWar &&
-                        mobileParty.MapFaction.IsKingdomFaction &&
-                        FactionManager.GetEnemyKingdoms((Kingdom)mobileParty.MapFaction).Count() > 0)
-                        factor *= 0.5f;
-                    troopNumberLimit = (int)(mobileParty.Party.PartySizeLimit * factor);
-                }
-
-                if (!Campaign.Current.GameStarted)
-                {
-                    float randomFloat = MBRandom.RandomFloat;
-                    float num = MathF.Sqrt(MBRandom.RandomFloat);
-                    float num2 = 1f - randomFloat * num;
-                    troopNumberLimit = (int)((float)mobileParty.Party.PartySizeLimit * num2);
-                }
-                mobileParty.InitializeMobilePartyAroundPosition(Owner.Clan.DefaultPartyTemplate, position, spawnRadius, 0f, troopNumberLimit);
-                mobileParty.Party.SetVisualAsDirty();
-                if (spawnSettlement != null)
-                {
-                    mobileParty.Ai.SetMoveGoToSettlement(spawnSettlement);
-                }
-                mobileParty.Aggressiveness = 0.9f + 0.1f * (float)Owner.GetTraitLevel(DefaultTraits.Valor) - 0.05f * (float)Owner.GetTraitLevel(DefaultTraits.Mercy);
-                mobileParty.ItemRoster.Add(new ItemRosterElement(DefaultItems.Grain, MBRandom.RandomInt(15, 30)));
-                Owner.PassedTimeAtHomeSettlement = (int)(MBRandom.RandomFloat * 100f);
-                if (spawnSettlement != null)
-                {
-                    mobileParty.Ai.SetMoveGoToSettlement(spawnSettlement);
-                }
-
-                return false;
-            }
-        }
+        // Commented out - InitializeLordPartyProperties removed in 1.3.x (now uses CreateLordParty/OnMobilePartySetOnCreation)
+        //[HarmonyPatch(typeof(LordPartyComponent))]
+        //internal class LordPartyComponentPatches
+        //{
+        //    [HarmonyPrefix]
+        //    [HarmonyPatch("InitializeLordPartyProperties")]
+        //    private static bool InitializeLordPartyProperties(...)
+        //    { ... }
+        //}
 
         [HarmonyPatch(typeof(SiegeAftermathCampaignBehavior))]
         internal class SiegeAftermathCampaignBehaviorPatches

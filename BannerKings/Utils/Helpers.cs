@@ -22,6 +22,7 @@ using TaleWorlds.ObjectSystem;
 using static BannerKings.Managers.PopulationManager;
 using static TaleWorlds.Core.ItemCategory;
 
+using BannerKings.Utils;
 namespace BannerKings.Utils
 {
     public static class Helpers
@@ -42,13 +43,13 @@ namespace BannerKings.Utils
             {
                 if (primary)
                 {
-                    if (perk.PrimaryIncrementType == SkillEffect.EffectIncrementType.Add)
+                    if (perk.PrimaryIncrementType == EffectIncrementType.Add)
                         result.Add(perk.PrimaryBonus, perk.Name);
                     else result.AddFactor(perk.PrimaryBonus, perk.Name);
                 }
                 else
                 {
-                    if (perk.SecondaryIncrementType == SkillEffect.EffectIncrementType.Add)
+                    if (perk.SecondaryIncrementType == EffectIncrementType.Add)
                         result.Add(perk.SecondaryBonus, perk.Name);
                     else result.AddFactor(perk.SecondaryBonus, perk.Name);
                 }
@@ -166,18 +167,17 @@ namespace BannerKings.Utils
 
         public static void SetAlliance(IFaction faction1, IFaction faction2)
         {
+            // [BK1.3] IsAllied is read-only in 1.3.x; alliance state managed by game engine
             var stance = Clan.PlayerClan.GetStanceWith(Hero.OneToOneConversationHero.Clan);
             if (stance.IsNeutral)
             {
-                stance.IsAllied = true;
                 if (faction1 == Hero.MainHero.MapFaction || faction2 == Hero.MainHero.MapFaction)
                 {
                     MBInformationManager.AddQuickInformation(new TextObject("{=gc8D4iH4}The {FACTION1} and {FACTION2} are now allies.")
                         .SetTextVariable("FACTION1", faction1.Name)
                         .SetTextVariable("FACTION2", faction2.Name),
                         100,
-                        null,
-                        GetKingdomDecisionSound());
+                        null, null, GetKingdomDecisionSound());
                 }
             }
         }

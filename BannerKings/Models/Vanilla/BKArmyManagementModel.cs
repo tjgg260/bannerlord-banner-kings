@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Party;
+using TaleWorlds.Localization;
 
 namespace BannerKings.Models.Vanilla
 {
@@ -27,9 +28,10 @@ namespace BannerKings.Models.Vanilla
             (recruiter.MapFaction.IsKingdomFaction && recruiter.MapFaction.Leader == recruiter)
             || (recruiter.Clan.IsUnderMercenaryService && partyLeader != null && partyLeader.Clan == recruiter.Clan);
 
-        public override bool CheckPartyEligibility(MobileParty party)
+        public override bool CheckPartyEligibility(MobileParty party, out TextObject explanation)
         {
-            bool result = base.CheckPartyEligibility(party);
+            explanation = TextObject.GetEmpty();
+            bool result = base.CheckPartyEligibility(party, out explanation);
             if (party.ActualClan != null)
             {
                 if (party.ActualClan.IsUnderMercenaryService)

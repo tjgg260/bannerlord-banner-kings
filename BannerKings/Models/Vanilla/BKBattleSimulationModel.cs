@@ -10,10 +10,10 @@ namespace BannerKings.Models.Vanilla
 {
     public class BKBattleSimulationModel : DefaultCombatSimulationModel
     {
-        public override int SimulateHit(CharacterObject strikerTroop, CharacterObject struckTroop, PartyBase strikerParty,
-            PartyBase struckParty, float strikerAdvantage, MapEvent battle)
+        public override ExplainedNumber SimulateHit(CharacterObject strikerTroop, CharacterObject struckTroop, PartyBase strikerParty,
+            PartyBase struckParty, float strikerAdvantage, MapEvent battle, float strikerSideMorale, float struckSideMorale)
         {
-            float result = base.SimulateHit(strikerTroop, struckTroop, strikerParty, struckParty, strikerAdvantage, battle);
+            float result = base.SimulateHit(strikerTroop, struckTroop, strikerParty, struckParty, strikerAdvantage, battle, strikerSideMorale, struckSideMorale).ResultNumber;
             var leader = strikerParty.LeaderHero;
             if (leader != null)
             {
@@ -44,7 +44,7 @@ namespace BannerKings.Models.Vanilla
                 }
             }
 
-            return (int)MathF.Max(1f, result);
+            return new ExplainedNumber((int)MathF.Max(1f, result));
         }
     }
 }

@@ -21,13 +21,13 @@ namespace BannerKings.Components
         [SaveableField(12)] private Settlement robbingTarget;
         [SaveableField(13)] private CampaignTime lastDecision;
 
-        protected internal BanditHeroComponent(Hideout hideout, Hero leader) : base(hideout, false)
+        protected internal BanditHeroComponent(Hideout hideout, Hero leader) : base(hideout, false, null)
         {
             this.leader = leader;
             lastDecision = CampaignTime.Never;
         }
 
-        public override void ChangePartyLeader(Hero newLeader)
+        public new void ChangePartyLeader(Hero newLeader)
         {
             base.ChangePartyLeader(newLeader);
             leader = newLeader;
@@ -61,17 +61,17 @@ namespace BannerKings.Components
             MobileParty party = MobileParty;
             ConsiderLeaveHideout(party);
 
-            int partyLimit = party.LimitedPartySize;
+            int partyLimit = party.Party.PartySizeLimit;
             if (party.CurrentSettlement == null)
             {
                 if (party.MemberRoster.TotalManCount < partyLimit * 0.2f)
                 {
-                    party.Ai.SetMoveGoToSettlement(Hideout.Settlement);
+                    party.SetMoveGoToSettlement(Hideout.Settlement, MobileParty.NavigationType.Default, false);
                 }
 
                 if (party.Food < 10)
                 {
-                    party.Ai.SetMoveGoToSettlement(Hideout.Settlement);
+                    party.SetMoveGoToSettlement(Hideout.Settlement, MobileParty.NavigationType.Default, false);
                     return;
                 }
 
@@ -83,18 +83,18 @@ namespace BannerKings.Components
                     }
                     else
                     {
-                        party.Ai.SetMovePatrolAroundSettlement(Hideout.Settlement);
+                        party.SetMovePatrolAroundSettlement(Hideout.Settlement, MobileParty.NavigationType.Default, false);
                     }
                 }
 
                 if (raidTarget != null)
                 {
-                    party.Ai.SetMoveRaidSettlement(raidTarget.Settlement);
+                    party.SetMoveRaidSettlement(raidTarget.Settlement, MobileParty.NavigationType.Default);
                 }
 
                 if (robbingTarget != null)
                 {
-                    party.Ai.SetMovePatrolAroundSettlement(robbingTarget);
+                    party.SetMovePatrolAroundSettlement(robbingTarget, MobileParty.NavigationType.Default, false);
                 }
             }
         }
@@ -113,20 +113,20 @@ namespace BannerKings.Components
 
                     foreach (var p in Hideout.Settlement.Parties)
                     {
-                        if (p.MemberRoster.TotalManCount < p.LimitedPartySize)
+                        if (p.MemberRoster.TotalManCount < p.Party.PartySizeLimit)
                         {
                             behavior.UpgradeParty(p);
                         }
                     }
                 }
 
-                if (party.CurrentSettlement.IsHideout &&party.MemberRoster.TotalManCount > party.LimitedPartySize * 0.6f)
+                if (party.CurrentSettlement.IsHideout &&party.MemberRoster.TotalManCount > party.Party.PartySizeLimit * 0.6f)
                 {
                     LeaveSettlementAction.ApplyForParty(party);
                     Settlement settlement = Hideout.Settlement;
                     if (party.IsBandit && party.PartyComponent is BanditHeroComponent)
                     {
-                        Town closest = SettlementHelper.FindNearestTown(x => x.IsTown, settlement).Town;
+                        Town closest = SettlementHelper.FindNearestTownToSettlement(settlement, MobileParty.NavigationType.All, x => x.IsTown);
                         foreach (var element in party.ItemRoster)
                         {
                             if (!element.EquipmentElement.Item.IsFood)
@@ -178,13 +178,15 @@ namespace BannerKings.Components
             {
                 if (raidTarget == null && robbingTarget == null)
                 {
-                    Settlement target = SettlementHelper.FindNearestVillage(x => x.Village.VillageState == Village.VillageStates.Normal &&
-                                x.Village.Hearth > 100f && x.Village.Militia < party.MemberRoster.TotalManCount * 0.5f, party);
+                    Village nearestVillage = SettlementHelper.FindNearestVillageToMobileParty(party, MobileParty.NavigationType.All,
+                                x => x.Village != null && x.Village.VillageState == Village.VillageStates.Normal &&
+                                x.Village.Hearth > 100f && x.Militia < party.MemberRoster.TotalManCount * 0.5f);
+                    Settlement target = nearestVillage?.Settlement;
                     if (target != null)
                     {
-                        party.Ai.SetMoveRaidSettlement(target);
-                        party.Ai.RecalculateShortTermAi();
-                        raidTarget = target.Village;
+                        party.SetMoveRaidSettlement(target, MobileParty.NavigationType.Default);
+                        party.RecalculateShortTermBehavior();
+                        raidTarget = nearestVillage;
                         lastDecision = CampaignTime.Now;
                         party.Ai.DisableAi();
                         party.Aggressiveness = 0f;
@@ -200,7 +202,8 @@ namespace BannerKings.Components
             {
                 if (robbingTarget == null && raidTarget == null)
                 {
-                    Settlement target = SettlementHelper.FindNearestTown(x => !x.Town.IsUnderSiege, party);
+                    Town nearestTown = SettlementHelper.FindNearestTownToMobileParty(party, MobileParty.NavigationType.All, x => !x.IsUnderSiege);
+                    Settlement target = nearestTown?.Settlement;
                     if (target != null)
                     {
                         robbingTarget = target;
@@ -225,15 +228,11 @@ namespace BannerKings.Components
             }
 
             leader.ChangeHeroGold(10000);
-            var party = MobileParty.CreateParty(id,
-                new BanditHeroComponent(origin, leader),
-                delegate (MobileParty mobileParty)
-                {
-                    mobileParty.ActualClan = leader.Clan;  
-                });
+            var party = MobileParty.CreateParty(id, new BanditHeroComponent(origin, leader));
+            party.ActualClan = leader.Clan;
 
             BannerKingsComponent.GiveFood(ref party);
-            party.InitializeMobilePartyAtPosition(template, origin.Settlement.Position2D);
+            party.InitializeMobilePartyAtPosition(template, origin.Settlement.GatePosition);
             return party;
         }
 

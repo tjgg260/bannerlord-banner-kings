@@ -1,5 +1,6 @@
 ﻿using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.Core;
+using TaleWorlds.Core.ViewModelCollection.ImageIdentifiers;
 using TaleWorlds.Core.ViewModelCollection.Information;
 using TaleWorlds.Library;
 
@@ -14,7 +15,7 @@ namespace BannerKings.UI.Crafting
         public ExtraMaterialItemVM(ItemObject material)
         {
             Material = material;
-            Visual = new ImageIdentifierVM(material);
+            Visual = new ItemImageIdentifierVM(material, null);
             foreach (ItemRosterElement element in PartyBase.MainParty.ItemRoster)
             {
                 if (element.EquipmentElement.Item == material)

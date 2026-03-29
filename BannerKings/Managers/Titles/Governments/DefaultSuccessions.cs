@@ -399,7 +399,7 @@ namespace BannerKings.Managers.Titles.Governments
                });
 
             TheocraticElective.Initialize(new TextObject("{=DO0DJddX}Theocratic Elective"),
-                new TextObject(),
+                new TextObject(""),
                 true,
                 -0.2f,
                 -0.5f,

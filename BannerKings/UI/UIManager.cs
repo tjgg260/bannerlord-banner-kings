@@ -288,17 +288,17 @@ namespace BannerKings.UI
             }
         }
 
-        [HarmonyPatch(typeof(SkillVM), MethodType.Constructor, typeof(SkillObject), typeof(CharacterVM),
+        [HarmonyPatch(typeof(SkillVM), MethodType.Constructor, typeof(SkillObject), typeof(CharacterDeveloperHeroItemVM),
             typeof(Action<PerkVM>))]
         internal class SkillVMConstructorPatch
         {
-            private static void Postfix(SkillVM __instance, SkillObject skill, CharacterVM developerVM,
+            private static void Postfix(SkillVM __instance, SkillObject skill, CharacterDeveloperHeroItemVM heroItem,
                 Action<PerkVM> onStartPerkSelection)
             {
-                var explainedNumber = BannerKingsConfig.Instance.LearningModel.CalculateLearningLimit(developerVM.Hero,
-                    developerVM.GetCurrentAttributePoint(skill.CharacterAttribute),
+                var explainedNumber = BannerKingsConfig.Instance.LearningModel.CalculateLearningLimit(heroItem.Hero,
+                    heroItem.Hero.GetAttributeValue(skill.Attributes[0]),
                     __instance.CurrentFocusLevel,
-                    skill.CharacterAttribute.Name,
+                    skill.Attributes[0].Name,
                     true);
                 __instance.LearningLimitTooltip = new BasicTooltipViewModel(() =>
                     CampaignUIHelper.GetTooltipForAccumulatingPropertyWithResult(
@@ -307,14 +307,14 @@ namespace BannerKings.UI
             }
         }
 
-        [HarmonyPatch(typeof(CharacterVM), "RefreshValues")]
+        [HarmonyPatch(typeof(CharacterDeveloperHeroItemVM), "RefreshValues")]
         internal class CharacterVMRefreshPatch
         {
-            private static bool Prefix(CharacterVM __instance)
+            private static bool Prefix(CharacterDeveloperHeroItemVM __instance)
             {
                 var focus = __instance.GetType()
                     .GetProperty("OrgUnspentFocusPoints", BindingFlags.Instance | BindingFlags.Public);
-                var value = __instance.GetCharacterDeveloper().UnspentFocusPoints;
+                var value = __instance.HeroDeveloper.UnspentFocusPoints;
                 focus.SetValue(__instance, value);
                 __instance.UnspentCharacterPoints = value;
                 return true;
@@ -488,13 +488,14 @@ namespace BannerKings.UI
             }
         }
 
-        [HarmonyPatch(typeof(CharacterCreationGainedPropertiesVM))]
-        internal class CharacterCreationGainedPropertiesVMPatches
+        // Commented out: constructor signature changed in 1.3.x
+        //[HarmonyPatch(typeof(CharacterCreationGainedPropertiesVM))]
+        /*internal class CharacterCreationGainedPropertiesVMPatches_DISABLED
         {
             [HarmonyPrefix]
-            [HarmonyPatch(MethodType.Constructor, typeof(CharacterCreation), typeof(int))]
+            [HarmonyPatch(MethodType.Constructor, typeof(CharacterCreationManager), typeof(int))]
             private static void Prefix1(CharacterCreationGainedPropertiesVM __instance,
-                CharacterCreation characterCreation, int currentIndex)
+                CharacterCreationManager characterCreation, int currentIndex)
             {
                 var _characterCreation = __instance
                     .GetType()
@@ -526,7 +527,7 @@ namespace BannerKings.UI
                 foreach (var attributeObj in BKAttributes.AllAttributes)
                 {
                     __instance.GainGroups.Add(
-                        new CharacterCreationGainGroupItemVM(attributeObj, characterCreation, currentIndex));
+                        new CharacterCreationGainGroupItemVM(attributeObj));
                 }
 
                 __instance.UpdateValues();
@@ -554,7 +555,7 @@ namespace BannerKings.UI
                     _affectedAttributesMap.Add(characterAttribute, new Tuple<int, int>(attributeValue, 0));
                 }
             }
-        }
+        }*/
 
 
         [HarmonyPatch(typeof(EducationGainedPropertiesVM), MethodType.Constructor, typeof(Hero), typeof(int))]
@@ -570,10 +571,10 @@ namespace BannerKings.UI
             }
         }
 
-        [HarmonyPatch(typeof(CharacterVM), "InitializeCharacter")]
+        [HarmonyPatch(typeof(CharacterDeveloperHeroItemVM), "InitializeCharacter")]
         internal class InitializeCharacterPatch
         {
-            private static bool Prefix(CharacterVM __instance)
+            private static bool Prefix(CharacterDeveloperHeroItemVM __instance)
             {
                 var inspectAttr = __instance.GetType()
                     .GetMethod("OnInspectAttribute", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -601,10 +602,13 @@ namespace BannerKings.UI
 
                     __instance.Attributes.Add(item);
 
-                    foreach (var skill2 in characterAttribute.Skills)
+                    foreach (var skill2 in Skills.All)
                     {
-                        __instance.Skills.Add(new SkillVM(skill2, __instance,
-                            delegate(PerkVM x) { startSelection.Invoke(__instance, new object[] {x}); }));
+                        if (skill2.Attributes != null && skill2.Attributes.Length > 0 && skill2.Attributes[0] == characterAttribute)
+                        {
+                            __instance.Skills.Add(new SkillVM(skill2, __instance,
+                                delegate(PerkVM x) { startSelection.Invoke(__instance, new object[] {x}); }));
+                        }
                     }
                 }
 
@@ -641,7 +645,7 @@ namespace BannerKings.UI
                         new StringPairItemVM(GameTexts.FindText("str_governor_of_label").ToString(), ""));
                 }
 
-                if (MobileParty.MainParty.GetHeroPerkRole(__instance.Hero) != SkillEffect.PerkRole.None)
+                if (MobileParty.MainParty.GetHeroPartyRole(__instance.Hero) != PartyRole.None)
                 {
                     __instance.CharacterStats.Add(
                         new StringPairItemVM(CampaignUIHelper.GetHeroClanRoleText(__instance.Hero, Clan.PlayerClan),

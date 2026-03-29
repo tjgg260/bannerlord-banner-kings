@@ -1,5 +1,6 @@
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
+using TaleWorlds.Core.ViewModelCollection.ImageIdentifiers;
 using TaleWorlds.Core.ViewModelCollection.Information;
 using TaleWorlds.Library;
 
@@ -14,7 +15,7 @@ namespace BannerKings.UI.VanillaTabs.TownManagement
         public MaterialItemVM(ItemObject material, Settlement settlement, int demand)
         {
             Material = material;
-            Visual = new ImageIdentifierVM(material);
+            Visual = new ItemImageIdentifierVM(material, null);
             int stash = 0;
             int market = 0;
             foreach (ItemRosterElement element in settlement.Stash)

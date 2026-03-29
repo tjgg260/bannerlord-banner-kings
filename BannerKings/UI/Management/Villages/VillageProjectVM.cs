@@ -7,6 +7,7 @@ using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
+using BannerKings.Utils;
 namespace BannerKings.UI.Management.Villages
 {
     public class VillageProjectVM : BannerKingsViewModel
@@ -132,14 +133,14 @@ namespace BannerKings.UI.Management.Villages
                 {
                     foreach (Building building2 in localDevelopmentList)
                     {
-                        if (!building2.BuildingType.IsDefaultProject)
+                        if (!building2.BuildingType.IsDefaultProject())
                         {
                             villageData.BuildingsInProgress.Enqueue(building2);
                         }
                     }
                 }
 
-                if (building != null && building.BuildingType.BuildingLocation == BuildingLocation.Daily)
+                if (building != null && building.BuildingType.IsDailyProject)
                 {
                     foreach (var b in villageData.Buildings)
                     {

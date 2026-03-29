@@ -133,11 +133,11 @@ namespace BannerKings.Behaviours
                     return;
                 }
 
-                bool war = FactionManager.GetEnemyKingdoms(kingdom).Count() > 0;
+                bool war = kingdom.FactionsAtWarWith.Count() > 0;
                 if (!war)
                 {
                     party.Ai.DisableAi();
-                    party.Ai.SetMoveGoToSettlement(gentryTuple.Item2.EstatesData.Settlement);
+                    party.SetMoveGoToSettlement(gentryTuple.Item2.EstatesData.Settlement, MobileParty.NavigationType.Default, false);
                 }
                 else
                 {
@@ -152,7 +152,7 @@ namespace BannerKings.Behaviours
                     }
 
                     party.Ai.DisableAi();
-                    party.Ai.SetMoveGoToSettlement(gentryTuple.Item2.EstatesData.Settlement);
+                    party.SetMoveGoToSettlement(gentryTuple.Item2.EstatesData.Settlement, MobileParty.NavigationType.Default, false);
                 }
             },
             GetType().Name);
@@ -187,7 +187,7 @@ namespace BannerKings.Behaviours
                         return;
                     }
 
-                    int freeSpaces = party.LimitedPartySize - party.MemberRoster.TotalManCount;
+                    int freeSpaces = party.Party.PartySizeLimit - party.MemberRoster.TotalManCount;
                     if (freeSpaces <= 0)
                     {
                         return;
@@ -240,7 +240,7 @@ namespace BannerKings.Behaviours
                 EnterSettlementAction.ApplyForParty(party, settlement);
                 LeaveSettlementAction.ApplyForParty(party);
                 estate.TakeRetinue(party);
-                SetPartyAiAction.GetActionForEscortingParty(party, army.LeaderParty);
+                SetPartyAiAction.GetActionForEscortingParty(party, army.LeaderParty, MobileParty.NavigationType.Default, false, false);
             }
         }
 
@@ -381,7 +381,7 @@ namespace BannerKings.Behaviours
                     }
                 }
                 Kingdom kingdom = settlement.MapFaction as Kingdom;
-                ChangeKingdomAction.ApplyByJoinToKingdom(clan, kingdom, false);
+                ChangeKingdomAction.ApplyByJoinToKingdom(clan, kingdom, CampaignTime.Now, false);
                 if (campaignStart)
                 {
                     EstateAction action = BannerKingsConfig.Instance.EstatesModel.GetGrant(vacantEstate, settlement.Owner, hero);
@@ -472,7 +472,7 @@ namespace BannerKings.Behaviours
             {
                 Equipment randomElementInefficiently2 = randomElementInefficiently.GetCivilianEquipments().GetRandomElementInefficiently<Equipment>();
                 EquipmentHelper.AssignHeroEquipmentFromEquipment(hero, randomElementInefficiently2);
-                Equipment equipment = new Equipment(false);
+                Equipment equipment = new Equipment(Equipment.EquipmentType.Battle);
                 equipment.FillFrom(randomElementInefficiently2, false);
                 EquipmentHelper.AssignHeroEquipmentFromEquipment(hero, equipment);
             }
@@ -483,15 +483,13 @@ namespace BannerKings.Behaviours
             TextObject fullName;
             NameGenerator.Current.GenerateHeroNameAndHeroFullName(hero, out firstName, out fullName, false);
             hero.SetName(fullName, firstName);
-            hero.HeroDeveloper.InitializeHeroDeveloper(true, null);
+            hero.HeroDeveloper.InitializeHeroDeveloper();
             BodyProperties bodyProperties = mother.BodyProperties;
             BodyProperties bodyProperties2 = father.BodyProperties;
             int seed = isOffspringFemale ? mother.CharacterObject.GetDefaultFaceSeed(1) : father.CharacterObject.GetDefaultFaceSeed(1);
-            string hairTags = isOffspringFemale ? mother.HairTags : father.HairTags;
-            string tattooTags = isOffspringFemale ? mother.TattooTags : father.TattooTags;
             AccessTools.Property(hero.GetType(), "StaticBodyProperties")
                 .SetValue(hero, BodyProperties.GetRandomBodyProperties(mother.CharacterObject.Race, isOffspringFemale,
-                bodyProperties, bodyProperties2, 1, seed, hairTags, father.BeardTags, tattooTags).StaticProperties);
+                bodyProperties, bodyProperties2, 1, seed, string.Empty, string.Empty, string.Empty).StaticProperties);
 
             CampaignEventDispatcher.Instance.OnHeroCreated(hero, true);
             

@@ -1,3 +1,4 @@
+using TaleWorlds.Core.ImageIdentifiers;
 using BannerKings.Actions;
 using BannerKings.CampaignContent.Traits;
 using BannerKings.Managers.Titles;
@@ -13,6 +14,7 @@ using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.SaveSystem;
 
+using BannerKings.Utils;
 namespace BannerKings.Behaviours.Diplomacy.Groups.Demands
 {
     public class ClaimantDemand : RadicalDemand
@@ -101,7 +103,7 @@ namespace BannerKings.Behaviours.Diplomacy.Groups.Demands
                    (Hero fulfiller) =>
                    {
                        float result = 5f;
-                       if (FactionManager.GetEnemyKingdoms(fulfiller.MapFaction as Kingdom).Count() == 0) result += 2f;
+                       if ((fulfiller.MapFaction as Kingdom).FactionsAtWarWith.Count() == 0) result += 2f;
                        int gold = fulfiller.Clan.Gold;
                        if (gold > 100000) result += 2f;
                        else if (gold > 50000) result += 1f;
@@ -273,7 +275,7 @@ namespace BannerKings.Behaviours.Diplomacy.Groups.Demands
                     .SetTextVariable("NAME", hero.Name)
                     .SetTextVariable("SCORE", tuple.Value.ResultNumber.ToString("0"))
                     .ToString(),
-                    new ImageIdentifier(CampaignUIHelper.GetCharacterCode(hero.CharacterObject, true)),
+                    new CharacterImageIdentifier(CampaignUIHelper.GetCharacterCode(hero.CharacterObject, true)),
                     true,
                     hint.ToString()));
             }

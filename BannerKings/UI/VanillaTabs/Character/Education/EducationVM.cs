@@ -1,3 +1,4 @@
+using TaleWorlds.Core.ImageIdentifiers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -417,7 +418,7 @@ namespace BannerKings.UI.VanillaTabs.Character.Education
                         new TextObject("{=ZJzjhHNd}{HERO} is not available for teaching: either they are not part of your family or do not like you enough.");
                     elements.Add(new InquiryElement(tuple,
                         tuple.Item1.Name + " - " + hero.Name,
-                        new ImageIdentifier(CampaignUIHelper.GetCharacterCode(hero.CharacterObject)),
+                        new CharacterImageIdentifier(CampaignUIHelper.GetCharacterCode(hero.CharacterObject)),
                         available,
                         hint.SetTextVariable("HERO", hero.Name)
                         .ToString()));
@@ -485,9 +486,9 @@ namespace BannerKings.UI.VanillaTabs.Character.Education
                         .SetTextVariable("DESCRIPTION", book.Description)
                         .SetTextVariable("LANGUAGE", book.Language.Name)
                         .SetTextVariable("SKILL", book.Skill != null ? new TextObject("{=NrQdJeJU}Skill: {SKILL}").SetTextVariable("SKILL", book.Skill.Name)
-                        : TextObject.Empty)
+                        : TextObject.GetEmpty())
                         .SetTextVariable("TRAIT", book.Trait != null ? new TextObject("{=1P5txvhk}Trait: {TRAIT}").SetTextVariable("TRAIT", book.Trait.Name)
-                        : TextObject.Empty)
+                        : TextObject.GetEmpty())
                         .ToString()));
                 }
             }

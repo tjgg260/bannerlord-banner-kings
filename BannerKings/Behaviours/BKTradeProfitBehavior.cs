@@ -53,7 +53,7 @@ namespace BannerKings.Behaviours
             {
                 float skillXp = (float)profit * 0.5f;
                 var party = MobileParty.MainParty;
-                Hero effectiveRoleHolder = party.GetEffectiveRoleHolder(PerkRole.PartyLeader);
+                Hero effectiveRoleHolder = party.GetEffectiveRoleHolder(PartyRole.PartyLeader);
                 if (effectiveRoleHolder == null)
                 {
                     return;

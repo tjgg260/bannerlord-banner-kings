@@ -19,7 +19,7 @@ namespace BannerKings.UI
         {
             var spriteData = UIResourceManager.SpriteData;
             var resourceContext = UIResourceManager.ResourceContext;
-            var resourceDepot = UIResourceManager.UIResourceDepot;
+            var resourceDepot = UIResourceManager.ResourceDepot;
 
             categoryDeveloper = spriteData.SpriteCategories["ui_characterdeveloper"];
             categoryDeveloper.Load(resourceContext, resourceDepot);
@@ -27,7 +27,7 @@ namespace BannerKings.UI
             categoryEncyclopedia = spriteData.SpriteCategories["ui_encyclopedia"];
             categoryEncyclopedia.Load(resourceContext, resourceDepot);
 
-            gauntletLayer = new GauntletLayer(550);
+            gauntletLayer = new GauntletLayer("BannerKingsScreen", 550, false);
             Layer = (ScreenLayer)gauntletLayer;
             ScreenManager.AddGlobalLayer(this, true);
         }
@@ -35,7 +35,7 @@ namespace BannerKings.UI
         private void Load()
         {
             var resourceContext = UIResourceManager.ResourceContext;
-            var resourceDepot = UIResourceManager.UIResourceDepot;
+            var resourceDepot = UIResourceManager.ResourceDepot;
             categoryDeveloper.Load(resourceContext, resourceDepot);
             categoryEncyclopedia.Load(resourceContext, resourceDepot);
         }
@@ -48,7 +48,7 @@ namespace BannerKings.UI
         public void LoadLayer(BannerKingsViewModel vm, string xml)
         {
             datasource = vm;
-            gauntletMovie = gauntletLayer.LoadMovie(xml, vm);
+            gauntletMovie = (TaleWorlds.GauntletUI.Data.IGauntletMovie)gauntletLayer.LoadMovie(xml, vm);
 
             gauntletLayer.InputRestrictions.SetInputRestrictions(false);
             Load();

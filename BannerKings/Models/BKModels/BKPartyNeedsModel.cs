@@ -57,13 +57,7 @@ namespace BannerKings.Models.BKModels
             if (needs.Party.EffectiveQuartermaster != null)
             {
                 Hero quarterMaster = needs.Party.EffectiveQuartermaster;
-                SkillHelper.AddSkillBonusForCharacter(DefaultSkills.Steward,
-                    BKSkillEffects.Instance.SupplyEfficiency,
-                    quarterMaster.CharacterObject,
-                    ref result,
-                    quarterMaster.GetSkillValue(DefaultSkills.Steward),
-                    false,
-                    0);
+                SkillHelper.AddSkillBonusForCharacter(BKSkillEffects.Instance.SupplyEfficiency, quarterMaster.CharacterObject, ref result);
 
                 Utils.Helpers.ApplyTraitEffect(quarterMaster, DefaultTraitEffects.Instance.CalculatingSupplies, ref result);
             }
@@ -90,13 +84,7 @@ namespace BannerKings.Models.BKModels
             if (needs.Party.EffectiveQuartermaster != null)
             {
                 Hero quarterMaster = needs.Party.EffectiveQuartermaster;
-                SkillHelper.AddSkillBonusForCharacter(DefaultSkills.Steward,
-                    BKSkillEffects.Instance.SupplyEfficiency,
-                    quarterMaster.CharacterObject,
-                    ref result,
-                    quarterMaster.GetSkillValue(DefaultSkills.Steward),
-                    false,
-                    0);
+                SkillHelper.AddSkillBonusForCharacter(BKSkillEffects.Instance.SupplyEfficiency, quarterMaster.CharacterObject, ref result);
 
                 Utils.Helpers.ApplyTraitEffect(quarterMaster, DefaultTraitEffects.Instance.CalculatingSupplies, ref result);
             }
@@ -127,13 +115,7 @@ namespace BannerKings.Models.BKModels
             if (needs.Party.EffectiveQuartermaster != null)
             {
                 Hero quarterMaster = needs.Party.EffectiveQuartermaster;
-                SkillHelper.AddSkillBonusForCharacter(DefaultSkills.Steward,
-                    BKSkillEffects.Instance.SupplyEfficiency,
-                    quarterMaster.CharacterObject,
-                    ref result,
-                    quarterMaster.GetSkillValue(DefaultSkills.Steward),
-                    false,
-                    0);
+                SkillHelper.AddSkillBonusForCharacter(BKSkillEffects.Instance.SupplyEfficiency, quarterMaster.CharacterObject, ref result);
 
                 Utils.Helpers.ApplyTraitEffect(quarterMaster, DefaultTraitEffects.Instance.CalculatingSupplies, ref result);
             }
@@ -160,13 +142,7 @@ namespace BannerKings.Models.BKModels
             if (needs.Party.EffectiveQuartermaster != null)
             {
                 Hero quarterMaster = needs.Party.EffectiveQuartermaster;
-                SkillHelper.AddSkillBonusForCharacter(DefaultSkills.Steward,
-                    BKSkillEffects.Instance.SupplyEfficiency,
-                    quarterMaster.CharacterObject,
-                    ref result,
-                    quarterMaster.GetSkillValue(DefaultSkills.Steward),
-                    false,
-                    0);
+                SkillHelper.AddSkillBonusForCharacter(BKSkillEffects.Instance.SupplyEfficiency, quarterMaster.CharacterObject, ref result);
 
                 Utils.Helpers.ApplyTraitEffect(quarterMaster, DefaultTraitEffects.Instance.CalculatingSupplies, ref result);
             }
@@ -196,13 +172,7 @@ namespace BannerKings.Models.BKModels
             if (needs.Party.EffectiveQuartermaster != null)
             {
                 Hero quarterMaster = needs.Party.EffectiveQuartermaster;
-                SkillHelper.AddSkillBonusForCharacter(DefaultSkills.Steward,
-                    BKSkillEffects.Instance.SupplyEfficiency,
-                    quarterMaster.CharacterObject,
-                    ref result,
-                    quarterMaster.GetSkillValue(DefaultSkills.Steward),
-                    false,
-                    0);
+                SkillHelper.AddSkillBonusForCharacter(BKSkillEffects.Instance.SupplyEfficiency, quarterMaster.CharacterObject, ref result);
 
                 Utils.Helpers.ApplyTraitEffect(quarterMaster, DefaultTraitEffects.Instance.CalculatingSupplies, ref result);
             }
@@ -229,13 +199,7 @@ namespace BannerKings.Models.BKModels
             if (needs.Party.EffectiveQuartermaster != null)
             {
                 Hero quarterMaster = needs.Party.EffectiveQuartermaster;
-                SkillHelper.AddSkillBonusForCharacter(DefaultSkills.Steward,
-                    BKSkillEffects.Instance.SupplyEfficiency,
-                    quarterMaster.CharacterObject,
-                    ref result,
-                    quarterMaster.GetSkillValue(DefaultSkills.Steward),
-                    false,
-                    0);
+                SkillHelper.AddSkillBonusForCharacter(BKSkillEffects.Instance.SupplyEfficiency, quarterMaster.CharacterObject, ref result);
 
                 Utils.Helpers.ApplyTraitEffect(quarterMaster, DefaultTraitEffects.Instance.CalculatingSupplies, ref result);
             }
@@ -273,13 +237,7 @@ namespace BannerKings.Models.BKModels
             if (needs.Party.EffectiveQuartermaster != null)
             {
                 Hero quarterMaster = needs.Party.EffectiveQuartermaster;
-                SkillHelper.AddSkillBonusForCharacter(DefaultSkills.Steward,
-                    BKSkillEffects.Instance.SupplyEfficiency,
-                    quarterMaster.CharacterObject,
-                    ref result,
-                    quarterMaster.GetSkillValue(DefaultSkills.Steward),
-                    false,
-                    0);
+                SkillHelper.AddSkillBonusForCharacter(BKSkillEffects.Instance.SupplyEfficiency, quarterMaster.CharacterObject, ref result);
 
                 Utils.Helpers.ApplyTraitEffect(quarterMaster, DefaultTraitEffects.Instance.CalculatingSupplies, ref result);
             }
@@ -309,13 +267,7 @@ namespace BannerKings.Models.BKModels
             if (needs.Party.EffectiveQuartermaster != null)
             {
                 Hero quarterMaster = needs.Party.EffectiveQuartermaster;
-                SkillHelper.AddSkillBonusForCharacter(DefaultSkills.Steward,
-                    BKSkillEffects.Instance.SupplyEfficiency,
-                    quarterMaster.CharacterObject,
-                    ref result,
-                    quarterMaster.GetSkillValue(DefaultSkills.Steward),
-                    false,
-                    0);
+                SkillHelper.AddSkillBonusForCharacter(BKSkillEffects.Instance.SupplyEfficiency, quarterMaster.CharacterObject, ref result);
 
                 Utils.Helpers.ApplyTraitEffect(quarterMaster, DefaultTraitEffects.Instance.CalculatingSupplies, ref result);
             }
@@ -365,13 +317,7 @@ namespace BannerKings.Models.BKModels
             if (needs.Party.EffectiveQuartermaster != null)
             {
                 Hero quarterMaster = needs.Party.EffectiveQuartermaster;
-                SkillHelper.AddSkillBonusForCharacter(DefaultSkills.Steward,
-                    BKSkillEffects.Instance.SupplyEfficiency,
-                    quarterMaster.CharacterObject,
-                    ref result,
-                    quarterMaster.GetSkillValue(DefaultSkills.Steward),
-                    false,
-                    0);
+                SkillHelper.AddSkillBonusForCharacter(BKSkillEffects.Instance.SupplyEfficiency, quarterMaster.CharacterObject, ref result);
 
                 Utils.Helpers.ApplyTraitEffect(quarterMaster, DefaultTraitEffects.Instance.CalculatingSupplies, ref result);
             }

@@ -1,3 +1,4 @@
+using TaleWorlds.Core.ImageIdentifiers;
 using System.Collections.Generic;
 using System.Linq;
 using BannerKings.Managers.Skills;
@@ -26,7 +27,7 @@ namespace BannerKings.Managers.Institutions.Religions.Faiths.Rites.Empire
             foreach (var hero in GetAdequateSacrifices(executor))
             {
                 options.Add(new InquiryElement(hero, hero.Name.ToString(),
-                    new ImageIdentifier(CampaignUIHelper.GetCharacterCode(hero.CharacterObject))));
+                    new CharacterImageIdentifier(CampaignUIHelper.GetCharacterCode(hero.CharacterObject))));
             }
 
             MBInformationManager.ShowMultiSelectionInquiry(
@@ -65,7 +66,7 @@ namespace BannerKings.Managers.Institutions.Religions.Faiths.Rites.Empire
             MBInformationManager.AddQuickInformation(new TextObject("{=DW2LjgpT}{SACRIFICE} was executed as a traitor by {HERO}.")
                     .SetTextVariable("HERO", actionTaker.Name)
                     .SetTextVariable("SACRIFICE", input.Name),
-                0, actionTaker.CharacterObject, "event:/ui/notification/relation");
+                0, actionTaker.CharacterObject, null, "event:/ui/notification/relation");
 
             BannerKingsConfig.Instance.ReligionsManager.AddPiety(actionTaker, piety, actionTaker.Clan == Clan.PlayerClan);
             actionTaker.AddSkillXp(BKSkills.Instance.Theology, piety * 1.2f);

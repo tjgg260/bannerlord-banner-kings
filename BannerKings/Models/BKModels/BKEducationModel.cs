@@ -49,13 +49,9 @@ namespace BannerKings.Models.BKModels
         {
             var result = new ExplainedNumber(1f / (CampaignTime.DaysInYear * 3f), explanations);
 
-            SkillHelper.AddSkillBonusForCharacter(BKSkills.Instance.Scholarship,
-              BKSkillEffects.Instance.LifestyleSpeed,
+            SkillHelper.AddSkillBonusForCharacter(BKSkillEffects.Instance.LifestyleSpeed,
               hero.CharacterObject,
-              ref result,
-              hero.GetSkillValue(BKSkills.Instance.Scholarship),
-              true,
-              0);
+              ref result);
 
             return result;
         }
@@ -66,13 +62,9 @@ namespace BannerKings.Models.BKModels
             result.LimitMin(0f);
             result.LimitMax(5f);
 
-            SkillHelper.AddSkillBonusForCharacter(BKSkills.Instance.Scholarship,
-                BKSkillEffects.Instance.LanguageSpeed,
+            SkillHelper.AddSkillBonusForCharacter(BKSkillEffects.Instance.LanguageSpeed,
                 student.CharacterObject,
-                ref result,
-                student.GetSkillValue(BKSkills.Instance.Scholarship),
-                true,
-                0);
+                ref result);
 
             if (instructor != null)
             {
@@ -132,13 +124,9 @@ namespace BannerKings.Models.BKModels
                 result.AddFactor(0.20f, BKPerks.Instance.ScholarshipBookWorm.Name);
             }
 
-            SkillHelper.AddSkillBonusForCharacter(BKSkills.Instance.Scholarship,
-                BKSkillEffects.Instance.ReadingSpeed,
+            SkillHelper.AddSkillBonusForCharacter(BKSkillEffects.Instance.ReadingSpeed,
                 reader.CharacterObject,
-                ref result,
-                reader.GetSkillValue(BKSkills.Instance.Scholarship),
-                true,
-                0);
+                ref result);
 
             return result;
         }

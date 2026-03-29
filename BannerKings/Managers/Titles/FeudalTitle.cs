@@ -474,9 +474,7 @@ namespace BannerKings.Managers.Titles
                     MBInformationManager.AddQuickInformation(new TextObject("{=fvbLMV0a}The {LAW} has been enacted in the {TITLE}.")
                         .SetTextVariable("LAW", law.Name)
                         .SetTextVariable("TITLE", FullName),
-                        0,
-                        null,
-                        Utils.Helpers.GetKingdomDecisionSound());
+                        0, null, null, Utils.Helpers.GetKingdomDecisionSound());
                 }
             }
 

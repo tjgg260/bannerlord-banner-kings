@@ -11,6 +11,7 @@ using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
+using BannerKings.Utils;
 namespace BannerKings.Models.BKModels
 {
     public class BKWarModel
@@ -109,7 +110,7 @@ namespace BannerKings.Models.BKModels
                 .SetTextVariable("FACTION", attacker.Name)
                 .SetTextVariable("CASUALTIES", attackerCasualties));
 
-            List<Settlement> attackerConquests = DiplomacyHelper.GetSuccessfullSiegesInWarForFaction(attacker,
+            List<Settlement> attackerConquests = Compat.GetSuccessfulSieges(attacker,
                attackerLink, (Settlement x) => x.Town != null);
             foreach (var settlement in attackerConquests)
             {
@@ -172,7 +173,7 @@ namespace BannerKings.Models.BKModels
 
             // --- DEFENDER ----
 
-            List<Settlement> defenderConquests = DiplomacyHelper.GetSuccessfullSiegesInWarForFaction(defender,
+            List<Settlement> defenderConquests = Compat.GetSuccessfulSieges(defender,
                 attackerLink, (Settlement x) => x.Town != null);
             foreach (var settlement in defenderConquests)
             {

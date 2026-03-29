@@ -8,6 +8,7 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
 
+using BannerKings.Utils;
 namespace BannerKings.Managers.Goals.Decisions
 {
     public class DemesneLawChangeDecision : Goal
@@ -53,7 +54,7 @@ namespace BannerKings.Managers.Goals.Decisions
                 failedReasons.Add(new TextObject("{=akMdyYw0}Your faction has no contract. Found a kigdom-level title for your faction first."));
             }
 
-            if (FactionManager.GetEnemyKingdoms(Clan.PlayerClan.Kingdom).Count() > 0)
+            if (Clan.PlayerClan.Kingdom.FactionsAtWarWith.Count() > 0)
             {
                 failedReasons.Add(new TextObject("{=qCfmQGiD}Contract changes can not be proposed during wars."));
             }
@@ -92,7 +93,7 @@ namespace BannerKings.Managers.Goals.Decisions
                 }
 
                 options.Add(new LawChangeOption(GameTexts.FindText("str_bk_demesne_law", law.LawType.ToString()),
-                    new TextObject(),
+                    new TextObject(""),
                     law.AvailableForVoting,
                     decision, 
                     list));

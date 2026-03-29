@@ -1,3 +1,4 @@
+using TaleWorlds.Core.ImageIdentifiers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -282,7 +283,7 @@ namespace BannerKings.UI.Management
                     {
                         list.Add(new InquiryElement(item,
                                                 element.EquipmentElement.GetModifiedItemName().ToString(),
-                                                new ImageIdentifier(item),
+                                                new ItemImageIdentifier(item, null),
                                                 true,
                                                 ""));
                     }

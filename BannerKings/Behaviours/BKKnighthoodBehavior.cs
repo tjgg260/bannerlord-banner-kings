@@ -1,3 +1,4 @@
+using TaleWorlds.Core.ImageIdentifiers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -893,7 +894,7 @@ namespace BannerKings.Behaviours
 
                         list.Add(new InquiryElement(hero, 
                             hero.Name.ToString(), 
-                            new ImageIdentifier(CampaignUIHelper.GetCharacterCode(hero.CharacterObject, false)), isEnabled, hint));
+                            new CharacterImageIdentifier(CampaignUIHelper.GetCharacterCode(hero.CharacterObject, false)), isEnabled, hint));
                     }
                 }
                 if (list.Count > 0)

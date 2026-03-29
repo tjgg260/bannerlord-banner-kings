@@ -15,6 +15,7 @@ using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.ObjectSystem;
 
+using BannerKings.Utils;
 namespace BannerKings.Behaviours
 {
     public class BKBanditBehavior : BannerKingsBehavior
@@ -150,7 +151,7 @@ namespace BannerKings.Behaviours
             {
                 if (heroParty != null && heroParty.IsActive)
                 {
-                    if (TaleWorlds.CampaignSystem.Campaign.Current.Models.MapDistanceModel.GetDistance(party, heroParty) <= 10f)
+                    if (Compat.GetDistance(party, heroParty) <= 10f)
                     {
                         SetFollow(heroParty, party);
                     }
@@ -161,8 +162,8 @@ namespace BannerKings.Behaviours
         public void SetFollow(MobileParty heroParty, MobileParty follower)
         {
             follower.Ai.DisableForHours(2);
-            follower.Ai.SetMoveEscortParty(heroParty);
-            follower.Ai.RecalculateShortTermAi();
+            follower.SetMoveEscortParty(heroParty, MobileParty.NavigationType.Default, false);
+            follower.RecalculateShortTermBehavior();
         }
 
         public void CreateBanditHero(Clan clan)
@@ -180,7 +181,8 @@ namespace BannerKings.Behaviours
                 settlement = hideout.Settlement;
             }
 
-            Settlement closest = SettlementHelper.FindNearestTown(x => x.IsTown, settlement);
+            Town closestTown = Compat.FindNearestTown(x => x.IsTown, settlement);
+            Settlement closest = closestTown?.Settlement;
 
             var templates = CharacterObject.All.ToList().FindAll(x =>
               x.StringId.Contains("bannerkings_bandithero") && x.Culture == closest.Culture);
@@ -258,7 +260,7 @@ namespace BannerKings.Behaviours
             int num = 0;
             while ((float)num < TaleWorlds.CampaignSystem.Campaign.Current.Models.BanditDensityModel.NumberOfMinimumBanditPartiesInAHideoutToInfestIt * 6)
             {
-                TaleWorlds.CampaignSystem.Campaign.Current.GetCampaignBehavior<BanditsCampaignBehavior>()
+                TaleWorlds.CampaignSystem.Campaign.Current.GetCampaignBehavior<BanditSpawnCampaignBehavior>()
                     .AddBanditToHideout(hideout, clan.DefaultPartyTemplate, false);
                 num++;
             }

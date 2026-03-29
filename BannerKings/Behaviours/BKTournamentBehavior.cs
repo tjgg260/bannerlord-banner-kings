@@ -38,12 +38,12 @@ namespace BannerKings.Behaviours
                     var education = BannerKingsConfig.Instance.EducationManager.GetHeroEducation(Hero.MainHero);
                     if (education.HasPerk(BKPerks.Instance.GladiatorTourDeCalradia))
                     {
-                        var resultTown = SettlementHelper.FindNearestTown((Settlement s) =>
+                        var resultTown = Compat.FindNearestTown((Settlement s) =>
                         {
                             return s.Town.HasTournament;
                         },
-                        null
-                        ).Town;
+                        (Settlement)null
+                        );
 
                         var game = TaleWorlds.CampaignSystem.Campaign.Current.TournamentManager.GetTournamentGame(resultTown);
                         if (resultTown != null)

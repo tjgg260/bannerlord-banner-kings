@@ -140,7 +140,7 @@ namespace BannerKings.Managers.Goals.Decisions
             var cultureOptions = new List<InquiryElement>();
             foreach (var culture in TaleWorlds.CampaignSystem.Campaign.Current.ObjectManager.GetObjectTypeList<CultureObject>())
             {
-                if (culture.NotableAndWandererTemplates != null && culture.NotableAndWandererTemplates.Count > 0 ||
+                if (culture.NotableTemplates != null && culture.NotableTemplates.Count > 0 ||
                     culture.CanHaveSettlement && !culture.IsBandit && culture.IsMainCulture)
                 {
                     cultureOptions.Add(new InquiryElement(culture,
@@ -215,7 +215,7 @@ namespace BannerKings.Managers.Goals.Decisions
         private List<CharacterObject> GetAdequateCharacter(CompanionType type)
         {
             var possibleTemplates = new List<CharacterObject>();
-            foreach (var template in selectedCulture.NotableAndWandererTemplates.Where(t => t.Occupation == Occupation.Wanderer))
+            foreach (var template in selectedCulture.NotableTemplates.Where(t => t.Occupation == Occupation.Wanderer))
             {
                 foreach (var skill in type.Skills)
                     if (template.GetSkillValue(skill) >= 50) possibleTemplates.Add(template);

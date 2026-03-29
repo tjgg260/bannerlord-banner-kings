@@ -23,6 +23,7 @@ using BannerKings.Managers.Titles.Governments;
 using BannerKings.Managers.Titles;
 using BannerKings.Models.Vanilla.Abstract;
 
+using BannerKings.Utils;
 namespace BannerKings.Models.Vanilla
 {
     public class BKVolunteerModel : VolunteerModel
@@ -132,7 +133,7 @@ namespace BannerKings.Models.Vanilla
                     factor = 0.4f;
                 }
 
-                if (buyerHero.MapFaction.IsKingdomFaction && FactionManager.GetEnemyKingdoms(buyerHero.MapFaction as Kingdom).Count() > 0)
+                if (buyerHero.MapFaction.IsKingdomFaction && (buyerHero.MapFaction as Kingdom).FactionsAtWarWith.Count() > 0)
                 {
                     factor += 0.15f;
                 }

@@ -1,4 +1,5 @@
 using BannerKings.Extensions;
+using BannerKings.Utils;
 using BannerKings.Managers.Buildings;
 using BannerKings.Managers.Innovations;
 using BannerKings.Managers.Populations;
@@ -280,8 +281,8 @@ namespace BannerKings.Behaviours
 
             if (town.Governor != null && town.CurrentBuilding != null)
             {
-                Town materialSource = town.IsTown ? town : SettlementHelper
-                    .FindNearestTown(x => !x.MapFaction.IsAtWarWith(town.MapFaction)).Town;
+                Town materialSource = town.IsTown ? town : Compat
+                    .FindNearestTown(x => !x.MapFaction.IsAtWarWith(town.MapFaction));
 
                 if (materialSource == null)
                 {
@@ -456,15 +457,27 @@ namespace BannerKings.Behaviours
                     var buildings = settlement.Town.Buildings;
                     foreach (var type in BKBuildings.Instance.All)
                     {
-                        if (settlement.IsTown && type.BuildingLocation == BuildingLocation.Settlement &&
-                            buildings.FirstOrDefault(x => x.BuildingType == type) == null)
+                        if (buildings.FirstOrDefault(x => x.BuildingType == type) == null)
                         {
-                            buildings.Add(new Building(type, settlement.Town));
-                        }
-                        else if (settlement.IsCastle && type.BuildingLocation == BuildingLocation.Castle &&
-                            buildings.FirstOrDefault(x => x.BuildingType == type) == null)
-                        {
-                            buildings.Add(new Building(type, settlement.Town));
+                            // Castle-specific buildings
+                            bool isCastleBuilding = type == BKBuildings.Instance.Port ||
+                                                    type == BKBuildings.Instance.CastleMines ||
+                                                    type == BKBuildings.Instance.CastleRetinue ||
+                                                    type == BKBuildings.Instance.WarhorseStuds;
+                            // Settlement-specific buildings
+                            bool isSettlementBuilding = type == BKBuildings.Instance.Harbor ||
+                                                         type == BKBuildings.Instance.Mines ||
+                                                         type == BKBuildings.Instance.Theater ||
+                                                         type == BKBuildings.Instance.Armory ||
+                                                         type == BKBuildings.Instance.CourtHouse;
+                            if (settlement.IsTown && isSettlementBuilding)
+                            {
+                                buildings.Add(new Building(type, settlement.Town));
+                            }
+                            else if (settlement.IsCastle && isCastleBuilding)
+                            {
+                                buildings.Add(new Building(type, settlement.Town));
+                            }
                         }
                     }
 

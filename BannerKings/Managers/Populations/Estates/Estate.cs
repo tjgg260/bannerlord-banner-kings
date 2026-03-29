@@ -62,7 +62,7 @@ namespace BannerKings.Managers.Populations.Estates
             return result;
         }
 
-        public TextObject Name => Owner != null ? new TextObject("{=pKtOLvPi}Estate of {OWNER}").SetTextVariable("OWNER", Owner.Name) : new TextObject();
+        public TextObject Name => Owner != null ? new TextObject("{=pKtOLvPi}Estate of {OWNER}").SetTextVariable("OWNER", Owner.Name) : new TextObject("");
 
         public void SetOwner(Hero newOnwer)
         {
@@ -72,9 +72,7 @@ namespace BannerKings.Managers.Populations.Estates
             {
                 MBInformationManager.AddQuickInformation(new TextObject("{=U6bVmS8Z}You are now the owner of an estate at {SETTLEMENT}")
                     .SetTextVariable("SETTLEMENT", EstatesData.Settlement.Name),
-                    0,
-                    null,
-                    Utils.Helpers.GetRelationDecisionSound());
+                    0, null, null, Utils.Helpers.GetRelationDecisionSound());
             }
         }
 

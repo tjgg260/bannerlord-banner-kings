@@ -1,5 +1,6 @@
 ﻿using BannerKings.Behaviours.Diplomacy.Groups;
 using BannerKings.Behaviours.Diplomacy;
+using TaleWorlds.Core.ViewModelCollection.ImageIdentifiers;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Core.ViewModelCollection.Information;
@@ -44,7 +45,7 @@ namespace BannerKings.UI.VanillaTabs.Kingdoms.Groups
                 Leader = new GroupMemberVM(Group.Leader, true);
                 if (Group.Leader.Clan != null)
                 {
-                    ClanBanner = new ImageIdentifierVM(BannerCode.CreateFrom(Group.Leader.Clan.Banner), true);
+                    ClanBanner = new BannerImageIdentifierVM(Group.Leader.Clan.Banner, true);
                 }
             }
         }

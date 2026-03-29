@@ -1,4 +1,4 @@
-﻿using BannerKings.Managers.Populations;
+using BannerKings.Managers.Populations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +8,7 @@ using TaleWorlds.CampaignSystem.Settlements.Buildings;
 using TaleWorlds.CampaignSystem.ViewModelCollection.GameMenu.TownManagement;
 using TaleWorlds.Library;
 
+using BannerKings.Utils;
 namespace BannerKings.UI.Management.Villages
 {
     public class VillageProjectSelectionVM : ViewModel
@@ -51,7 +52,7 @@ namespace BannerKings.UI.Management.Villages
             }
 
             foreach (Building building in from x in buildings
-                                          where x.BuildingType.BuildingLocation != BuildingLocation.Daily
+                                          where x!.BuildingType.IsDailyProject
                                           select x)
             {
                 VillageBuildingProjectVM VillageBuildingProjectVM = new VillageBuildingProjectVM(
@@ -69,7 +70,7 @@ namespace BannerKings.UI.Management.Villages
             if (Settlement.CurrentSettlement != null)
             {
                 foreach (Building building2 in from x in buildings
-                                               where x.BuildingType.BuildingLocation == BuildingLocation.Daily
+                                               where x.BuildingType.IsDailyProject
                                                select x)
                 {
                     VillageBuildingDailyProjectVM VillageBuildingDailyProjectVM = new VillageBuildingDailyProjectVM(
@@ -168,7 +169,7 @@ namespace BannerKings.UI.Management.Villages
                 villageData.BuildingsInProgress = new Queue<Building>();
                 foreach (Building b in LocalDevelopmentList)
                 {
-                    if (!b.BuildingType.IsDefaultProject)
+                    if (!b.BuildingType.IsDefaultProject())
                     {
                         villageData.BuildingsInProgress.Enqueue(b);
                     }

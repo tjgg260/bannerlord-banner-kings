@@ -138,10 +138,7 @@ namespace BannerKings.Models.Vanilla
 
             if (settlement.Town != null)
             {
-                SkillHelper.AddSkillBonusForTown(DefaultSkills.Crafting,
-                        BKSkillEffects.Instance.ProductionEfficiency,
-                        settlement.Town,
-                        ref result);
+                SkillHelper.AddSkillBonusForTown(BKSkillEffects.Instance.ProductionEfficiency, settlement.Town, ref result);
             }
 
             return result;
@@ -185,10 +182,7 @@ namespace BannerKings.Models.Vanilla
 
             if (settlement.Town != null)
             {
-                SkillHelper.AddSkillBonusForTown(DefaultSkills.Crafting,
-                       BKSkillEffects.Instance.ProductionQuality,
-                       settlement.Town,
-                       ref result);
+                SkillHelper.AddSkillBonusForTown(BKSkillEffects.Instance.ProductionQuality, settlement.Town, ref result);
             }
            
             return result;
@@ -283,10 +277,7 @@ namespace BannerKings.Models.Vanilla
                 Hero governor = settlement.Town.Governor;
                 if (governor != null)
                 {
-                    SkillHelper.AddSkillBonusForTown(DefaultSkills.Trade,
-                       BKSkillEffects.Instance.TradePower,
-                       settlement.Town,
-                       ref result);
+                    SkillHelper.AddSkillBonusForTown(BKSkillEffects.Instance.TradePower, settlement.Town, ref result);
                 }
 
                 if (settlement.IsCastle) result.AddFactor(-0.25f, new TextObject("{=UPhMZ859}Castle"));
@@ -347,7 +338,7 @@ namespace BannerKings.Models.Vanilla
             baseResult *= MathF.Sqrt(category.BaseDemand / 2f);
             MarketGroup market = DefaultMarketGroups.Instance.GetMarket(town.Culture);
             if (market != null)
-                baseResult *= market.GetDemand(category);
+                baseResult *= market.GetSpawn(town.Culture);
 
             return baseResult / CampaignTime.DaysInYear;
         }

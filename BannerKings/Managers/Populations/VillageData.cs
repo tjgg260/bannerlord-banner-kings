@@ -87,7 +87,7 @@ namespace BannerKings.Managers.Populations
             if (inProgress.IsEmpty())
             {
                 inProgress.Enqueue(buildings.GetRandomElementWithPredicate(x =>
-                    x.BuildingType.BuildingLocation != BuildingLocation.Daily));
+                    x!.BuildingType.IsDailyProject));
             }
         }
 
@@ -97,8 +97,11 @@ namespace BannerKings.Managers.Populations
             {
                 int buildingsToGive = (int)(Village.Hearth / 200f);
                 for (int i = 0; i < buildingsToGive; i++)
-                    buildings.GetRandomElementWithPredicate(x => x.BuildingType.BuildingLocation != BuildingLocation.Daily)
-                        .LevelUp();           
+                {
+                    var building = buildings.GetRandomElementWithPredicate(x => x?.BuildingType != null && x.BuildingType.IsDailyProject);
+                    if (building != null) building.LevelUp();
+                    else break;
+                }           
 
                 BuildingsSet = true;
             }
@@ -138,8 +141,8 @@ namespace BannerKings.Managers.Populations
                         type.GetProductionCost(1),
                         type.GetProductionCost(2)
                     },
-                    type.BuildingLocation,
-                    new System.Tuple<BuildingEffectEnum, float, float, float>[] {});
+                    new System.Tuple<BuildingEffectEnum, BuildingEffectIncrementType, float, float, float>[] {},
+                    type.IsMilitaryProject, 0f, 0);
             }
 
             if (village.Owner != null)

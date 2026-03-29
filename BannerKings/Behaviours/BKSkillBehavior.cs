@@ -71,7 +71,7 @@ namespace BannerKings.Behaviours
                     skills = heroType.GetField("_heroSkills", BindingFlags.Instance | BindingFlags.NonPublic);
                 }
 
-                var charAttrs = (CharacterAttributes) attrs.GetValue(hero);
+                var charAttrs = (PropertyOwner<CharacterAttribute>) attrs.GetValue(hero);
                 if (charAttrs.HasProperty(BKAttributes.Instance.Wisdom))
                 {
                     continue;
@@ -86,7 +86,7 @@ namespace BannerKings.Behaviours
                     attrsDic.Add(BKAttributes.Instance.Wisdom, 2);
                 }
 
-                var charSkills = (CharacterSkills) skills.GetValue(hero);
+                var charSkills = (PropertyOwner<SkillObject>) skills.GetValue(hero);
                 var skillsDic = (Dictionary<SkillObject, int>) charSkills.GetType().BaseType
                     .GetField("_attributes", BindingFlags.Instance | BindingFlags.NonPublic)
                     .GetValue(charSkills);

@@ -1,3 +1,5 @@
+using TaleWorlds.Core.ImageIdentifiers;
+using BannerKings.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using BannerKings.Behaviours;
@@ -160,7 +162,7 @@ namespace BannerKings.Managers.Goals.Decisions
                     allBanners.Add(option);
                     elements.Add(new InquiryElement(option,
                                                     vassal.Name.ToString(),
-                                                    new ImageIdentifier(clan.Banner),
+                                                    new BannerImageIdentifier(clan.Banner, false),
                                                     ready && Clan.PlayerClan.Influence >= option.Influence,
                                                     hint.ToString()));
                     AddBanners(vassal.Clan);
@@ -217,12 +219,9 @@ namespace BannerKings.Managers.Goals.Decisions
         {
             var hero = GetFulfiller();
             var mobileParty = hero.PartyBelongedTo;
-            Army army = new Army(hero.Clan.Kingdom, mobileParty, Army.ArmyTypes.Patrolling)
-            {
-                AIBehavior = Army.AIBehaviorFlags.Gathering
-            };
+            Army army = new Army(hero.Clan.Kingdom, mobileParty, Army.ArmyTypes.Patrolling);
             Settlement settlement = hero.CurrentSettlement != null ? hero.CurrentSettlement :
-                SettlementHelper.FindNearestSettlement(x => x.Town != null || x.IsVillage, hero.PartyBelongedTo);
+                Compat.FindNearestSettlement(x => x.Town != null || x.IsVillage, hero.PartyBelongedTo);
             army.Gather(settlement);
             mobileParty.Army = army;
 
@@ -235,7 +234,7 @@ namespace BannerKings.Managers.Goals.Decisions
                     influenceTotal += option.Influence;
                     if (option.Party != null)
                     {
-                        SetPartyAiAction.GetActionForEscortingParty(option.Party, army.LeaderParty);
+                        SetPartyAiAction.GetActionForEscortingParty(option.Party, army.LeaderParty, MobileParty.NavigationType.Default, false, false);
                     }
                     else if (option.Estate != null)
                     {

@@ -21,6 +21,7 @@ using TaleWorlds.Localization;
 using static BannerKings.Managers.Policies.BKTaxPolicy;
 using static BannerKings.Managers.PopulationManager;
 
+using BannerKings.Utils;
 namespace BannerKings.Models.Vanilla
 {
     public class BKProsperityModel : DefaultSettlementProsperityModel
@@ -184,7 +185,7 @@ namespace BannerKings.Models.Vanilla
             {
                 var num4 = 0f;
                 foreach (var building in from x in fortification.Buildings
-                            where !x.BuildingType.IsDefaultProject && x.CurrentLevel > 0
+                            where !x.BuildingType.IsDefaultProject() && x.CurrentLevel > 0
                             select x)
                 {
                     num4 += DefaultPerks.Engineering.Apprenticeship.SecondaryBonus;
@@ -198,21 +199,21 @@ namespace BannerKings.Models.Vanilla
 
             if (fortification.BuildingsInProgress.IsEmpty())
             {
-                BuildingHelper.AddDefaultDailyBonus(fortification, BuildingEffectEnum.ProsperityDaily,
-                    ref explainedNumber);
+                foreach (var b in fortification.Buildings)
+                    b.AddEffectOfBuilding(BuildingEffectEnum.Prosperity, ref explainedNumber);
             }
 
             foreach (var building2 in fortification.Buildings)
             {
                 var buildingEffectAmount = building2.GetBuildingEffectAmount(BuildingEffectEnum.Prosperity);
-                if (!building2.BuildingType.IsDefaultProject && buildingEffectAmount > 0f)
+                if (!building2.BuildingType.IsDefaultProject() && buildingEffectAmount > 0f)
                 {
                     explainedNumber.Add(buildingEffectAmount, building2.Name);
                 }
 
-                if (building2.BuildingType == DefaultBuildingTypes.SettlementAquaducts ||
+                if (building2.BuildingType == DefaultBuildingTypes.SettlementWaterworks ||
                     building2.BuildingType == DefaultBuildingTypes.CastleGranary ||
-                    building2.BuildingType == DefaultBuildingTypes.SettlementGranary)
+                    building2.BuildingType == DefaultBuildingTypes.SettlementWarehouse)
                 {
                     PerkHelper.AddPerkBonusForTown(DefaultPerks.Medicine.CleanInfrastructure, fortification,
                         ref explainedNumber);

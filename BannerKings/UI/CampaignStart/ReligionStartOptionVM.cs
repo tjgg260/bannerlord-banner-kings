@@ -1,5 +1,6 @@
 using BannerKings.Managers.Institutions.Religions;
 using System;
+using TaleWorlds.Core.ViewModelCollection.ImageIdentifiers;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TaleWorlds.CampaignSystem;
@@ -39,7 +40,7 @@ namespace BannerKings.UI.CampaignStart
             }
         }
 
-        [DataSourceProperty] public ImageIdentifierVM Banner => new ImageIdentifierVM(BannerCode.CreateFrom(Religion.Faith.GetBanner()), true);
+        [DataSourceProperty] public ImageIdentifierVM Banner => new BannerImageIdentifierVM(Religion.Faith.GetBanner(), true);
         [DataSourceProperty] public string ShortDescription => Religion.Faith.GetDescriptionHint().ToString();
         [DataSourceProperty] public string Name => Religion.Faith.GetFaithName().ToString();
         [DataSourceProperty] public string Piety => BannerKingsConfig.Instance.ReligionsManager.GetStartingPiety(Religion,

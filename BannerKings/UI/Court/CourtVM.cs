@@ -28,7 +28,7 @@ namespace BannerKings.UI.Court
         private CouncilMember councilPosition;
         private CouncilVM councilVM;
         private MBBindingList<InformationElement> courtInfo, privilegesInfo, courtierInfo;
-        private CharacterVM currentCharacter;
+        private CharacterDeveloperHeroItemVM currentCharacter;
         private MBBindingList<ClanLordItemVM> family, courtiers, guests;
         private bool isRoyal, hasExtraPositions, selectorsVisible;
         private string positionName, positionDescription, positionEffects;
@@ -58,7 +58,7 @@ namespace BannerKings.UI.Court
             privilegesInfo = new MBBindingList<InformationElement>();
             guests = new MBBindingList<ClanLordItemVM>();
             isRoyal = royal;
-            currentCharacter = new CharacterVM(Hero.MainHero, null);
+            currentCharacter = new CharacterDeveloperHeroItemVM(Hero.MainHero, null);
         }
 
         [DataSourceProperty] public string FamilyText => new TextObject("{=QCw05MZN}Household").ToString();
@@ -398,7 +398,7 @@ namespace BannerKings.UI.Court
                             .SetTextVariable("ADM_COST", ((current.AdministrativeCost - expense.AdministrativeCost) * 100f).ToString("0"));
                     }
 
-                    InformationManager.ShowInquiry(new InquiryData(new TextObject().ToString(),
+                    InformationManager.ShowInquiry(new InquiryData(new TextObject("").ToString(),
                         description.ToString(),
                         Hero.MainHero.Gold >= cost,
                         true,
@@ -493,7 +493,7 @@ namespace BannerKings.UI.Court
 
         private void SetCurrentCharacter(ClanLordItemVM vm)
         {
-            CurrentCharacter = new CharacterVM(vm.GetHero(), null);
+            CurrentCharacter = new CharacterDeveloperHeroItemVM(vm.GetHero(), null);
             RefreshCharacter();
         }
 
@@ -652,7 +652,7 @@ namespace BannerKings.UI.Court
         }
 
         [DataSourceProperty]
-        public CharacterVM CurrentCharacter
+        public CharacterDeveloperHeroItemVM CurrentCharacter
         {
             get => currentCharacter;
             set

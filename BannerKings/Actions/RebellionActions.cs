@@ -22,7 +22,7 @@ namespace BannerKings.Actions
 
             foreach (Clan c in clans) 
                 if (c != leader)
-                    ChangeKingdomAction.ApplyByJoinToKingdomByDefection(c, kingdom);
+                    ChangeKingdomAction.ApplyByJoinToKingdomByDefection(c, c.Kingdom, kingdom, CampaignTime.Now, false);
 
             return kingdom;
         }
@@ -51,7 +51,7 @@ namespace BannerKings.Actions
                 leader.HomeSettlement,
                 encyclopediaText,
                 encyclopediaTitle,
-                TextObject.Empty);
+                TextObject.GetEmpty());
         }
     }
 }

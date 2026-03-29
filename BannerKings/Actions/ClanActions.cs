@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using HarmonyLib;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.Settlements;
@@ -49,13 +50,18 @@ namespace BannerKings.Actions
 
             hero.Clan = null;
             hero.CompanionOf = null;
-            clan.InitializeClan(name, name, hero.Culture, Banner.CreateOneColoredBannerWithOneIcon(
+            clan.Initialize();
+            AccessTools.Property(typeof(Clan), "Name")?.SetValue(clan, name);
+            AccessTools.Property(typeof(Clan), "InformalName")?.SetValue(clan, name);
+            clan.Culture = hero.Culture;
+            clan.Banner = Banner.CreateOneColoredBannerWithOneIcon(
                 settlement.MapFaction.Banner.GetFirstIconColor(), settlement.MapFaction.Banner.GetPrimaryColor(),
-                hero.Culture.PossibleClanBannerIconsIDs.GetRandomElement()), settlement.GatePosition);
+                hero.Culture.PossibleClanBannerIconsIDs.GetRandomElement());
+            AccessTools.Property(typeof(Clan), "InitialHomeSettlement")?.SetValue(clan, settlement);
             clan.AddRenown(renown);
             hero.Clan = clan;
             clan.SetLeader(hero);
-            clan.UpdateHomeSettlement(settlement);
+            clan.ConsiderAndUpdateHomeSettlement();
             if (hero.Spouse != null && !Utils.Helpers.IsClanLeader(hero.Spouse))
             {
                 JoinClan(hero.Spouse, clan);
@@ -74,7 +80,7 @@ namespace BannerKings.Actions
 
             if (originalClan != null)
             {
-                ChangeKingdomAction.ApplyByJoinToKingdom(clan, originalClan.Kingdom, false);
+                ChangeKingdomAction.ApplyByJoinToKingdom(clan, originalClan.Kingdom, CampaignTime.Now, false);
             }
 
             BannerKingsConfig.Instance.TitleManager.RemoveKnights(hero);

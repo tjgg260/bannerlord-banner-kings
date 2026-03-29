@@ -28,21 +28,16 @@ namespace BannerKings.Patches
         [HarmonyPatch(typeof(FactionManager))]
         internal class LordDialoguePatches
         {
-            [HarmonyPostfix]
+            // DeclareAlliance removed in 1.3.x
+            /*[HarmonyPostfix]
             [HarmonyPatch("DeclareAlliance")]
             private static void DeclareAlliance(IFaction faction1, IFaction faction2)
             {
                 if (faction1 != faction2 && !faction1.IsBanditFaction && !faction2.IsBanditFaction)
                 {
-                    StanceLink link1 = faction1.GetStanceWith(faction2);
-                    link1.IsAllied = true;
-
-                    StanceLink link2 = faction2.GetStanceWith(faction1);
-                    link2.IsAllied = true;
                 }
-
                 UpdateVisuals(faction1, faction2);
-            }
+            }*/
 
             [HarmonyPostfix]
             [HarmonyPatch("SetNeutral")]
@@ -50,8 +45,7 @@ namespace BannerKings.Patches
             {
                 if (faction1 != faction2 && !faction1.IsBanditFaction && !faction2.IsBanditFaction)
                 {
-                    StanceLink link = faction1.GetStanceWith(faction2);
-                    link.IsAllied = false;
+                    // [BK1.3] IsAllied is read-only in 1.3.x, managed by game engine
                 }
 
                 UpdateVisuals(faction1, faction2);
@@ -63,8 +57,7 @@ namespace BannerKings.Patches
             {
                 if (faction1 != faction2 && !faction1.IsBanditFaction && !faction2.IsBanditFaction)
                 {
-                    StanceLink link = faction1.GetStanceWith(faction2);
-                    link.IsAllied = false;
+                    // [BK1.3] IsAllied is read-only in 1.3.x, managed by game engine
                 }
 
                 return true;
@@ -153,7 +146,8 @@ namespace BannerKings.Patches
                 return false;
             }
 
-            [HarmonyPrefix]
+            // GetActionStatusForDiplomacyItemWithReason removed in 1.3.x
+            /*[HarmonyPrefix]
             [HarmonyPatch("GetActionStatusForDiplomacyItemWithReason")]
             private static bool ButtonCLickable(KingdomDiplomacyVM __instance, KingdomDiplomacyItemVM item, bool isResolve,
                  out TextObject disabledReason, ref bool __result)
@@ -161,14 +155,14 @@ namespace BannerKings.Patches
                 KingdomTruceItemVM kingdomTruceItemVM;
                 if (__result == false && (kingdomTruceItemVM = (item as KingdomTruceItemVM)) != null)
                 {
-                    disabledReason = TextObject.Empty;
+                    disabledReason = TextObject.GetEmpty();
                     __result = true;
                     return false;
                 }
 
-                disabledReason = TextObject.Empty;
+                disabledReason = TextObject.GetEmpty();
                 return true;
-            }
+            }*/
 
             [HarmonyPrefix]
             [HarmonyPatch("OnDeclareWar")]
@@ -392,7 +386,7 @@ namespace BannerKings.Patches
                         .SetTextVariable("PIETY", religion.Faith.WarDoctrine.GetPietyCost(casusBelli))
                         .SetTextVariable("PIETY_ICON", TextHelper.PIETY_ICON)
                         :
-                        TextObject.Empty;
+                        TextObject.GetEmpty();
 
                     if (enabled && isReligious)
                         enabled = religion.Faith.WarDoctrine.HeroHasPiety(Hero.MainHero, casusBelli);

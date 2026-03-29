@@ -1,10 +1,12 @@
 using BannerKings.Behaviours.Marriage;
 using System.Collections.Generic;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.CharacterDevelopment;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
+using BannerKings.Utils;
 namespace BannerKings.Dialogue
 {
     public static class DialogueHelper

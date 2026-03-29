@@ -1,4 +1,4 @@
-﻿using BannerKings.Managers.Court;
+using BannerKings.Managers.Court;
 using BannerKings.Managers.Court.Members.Tasks;
 using BannerKings.Managers.Duties;
 using BannerKings.Managers.Goals.Decisions;
@@ -12,6 +12,7 @@ using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
 
+using BannerKings.Utils;
 namespace BannerKings.Behaviours
 {
     public class BKArmyBehavior : CampaignBehaviorBase
@@ -83,7 +84,7 @@ namespace BannerKings.Behaviours
             if (kingdom == null || party.ActualClan == Clan.PlayerClan || leader.Clan.Influence < 100f)
                 return;
 
-            bool war = FactionManager.GetEnemyKingdoms(kingdom).Count() > 0;
+            bool war = kingdom.FactionsAtWarWith.Count() > 0;
             if (war)
             {
                 if (!BannerKingsConfig.Instance.ArmyManagementModel.CanCreateArmy(leader) || 
@@ -182,7 +183,7 @@ namespace BannerKings.Behaviours
             {
                 var days = 2f;
                 var settlement =
-                    SettlementHelper.FindNearestSettlement(x => x.IsFortification || x.IsVillage,
+                    Compat.FindNearestSettlement(x => x.IsFortification || x.IsVillage,
                         army.AiBehaviorObject);
                 playerArmyDuty = new AuxiliumDuty(CampaignTime.DaysFromNow(days), suzerainParty, completion, settlement,
                     army.Name);

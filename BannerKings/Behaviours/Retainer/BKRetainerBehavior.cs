@@ -67,17 +67,13 @@ namespace BannerKings.Behaviours.Retainer
                             }
                         }
                     }
-                    forbidden.Add(culture.MilitiaArcher);
-                    forbidden.Add(culture.MilitiaSpearman);
-                    forbidden.Add(culture.MilitiaVeteranArcher);
-                    forbidden.Add(culture.MilitiaVeteranSpearman);
+                    // Militia character properties removed in 1.3.x
 
                     foreach (CharacterObject troop in CharacterObject.All)
                     {
                         if (troop.Culture == culture &&
                             troop.Occupation == Occupation.Soldier &&
                             !forbidden.Contains(troop) &&
-                            !troop.HiddenInEncylopedia &&
                             troop.Level >= minLevel && troop.Level <= maxLevel)
                         {
                             if (!main.IsFemale && troop.IsFemale) continue;
@@ -129,7 +125,7 @@ namespace BannerKings.Behaviours.Retainer
                     {
                         if (contractor.IsActive)
                         {
-                            PartyBase.MainParty.MobileParty.Position2D = contractor.Position2D;
+                            PartyBase.MainParty.MobileParty.Position = contractor.Position;
                             if (TaleWorlds.CampaignSystem.Campaign.Current.CurrentMenuContext == null || 
                                 TaleWorlds.CampaignSystem.Campaign.Current.CurrentMenuContext.StringId != "bk_retinue_wait")
                             {
@@ -153,10 +149,10 @@ namespace BannerKings.Behaviours.Retainer
                 if (contractor != null && contractor.LeaderHero == contract.Contractor)
                 {
                     MobileParty.MainParty.IsActive = false;
-                    PartyBase.MainParty.UpdateVisibilityAndInspected(0f);
+                    PartyBase.MainParty.UpdateVisibilityAndInspected(MobileParty.MainParty.Position, 0f);
                     PartyBase.MainParty.MobileParty.IsVisible = false;
                     contractor.Party.SetAsCameraFollowParty();
-                    contractor.Party.UpdateVisibilityAndInspected(0f);
+                    contractor.Party.UpdateVisibilityAndInspected(contractor.Position, 0f);
                     contractor.IsVisible = true;
                 }
             }
@@ -171,7 +167,7 @@ namespace BannerKings.Behaviours.Retainer
                 {
                     MBTextManager.SetTextVariable("RETINUE_PARTY_NAME", party.Name);
                     MBTextManager.SetTextVariable("MORALE", party.Morale);
-                    MBTextManager.SetTextVariable("MAX", party.LimitedPartySize);
+                    MBTextManager.SetTextVariable("MAX", party.Party.PartySizeLimit);
                     MBTextManager.SetTextVariable("SIZE", party.MemberRoster.TotalManCount);
                     MBTextManager.SetTextVariable("QUARTERMASTER", party.EffectiveQuartermaster.Name);
                     MBTextManager.SetTextVariable("ENGINEER", party.EffectiveEngineer.Name);
@@ -201,7 +197,7 @@ namespace BannerKings.Behaviours.Retainer
                     }
                 },
                 GameMenu.MenuAndOptionType.WaitMenuHideProgressAndHoursOption,
-                TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.Encounter);
+                TaleWorlds.CampaignSystem.GameMenus.GameMenu.MenuOverlayType.Encounter);
 
             starter.AddGameMenu("bk_retinue_contract",
                 "{=B0FvvUGf}Retainer service for {CONTRACTOR}\nContract type: {TYPE}\nRole: {ROLE}\nWage: {WAGE}{GOLD_ICON}/day\nLeaves: {LEAVES}(+1/season)",
@@ -214,7 +210,7 @@ namespace BannerKings.Behaviours.Retainer
                     var party = contract.Contractor.PartyBelongedTo;
                     if (party != null)
                     {
-                        role = GameTexts.FindText("role", party.GetHeroPerkRole(Hero.MainHero).ToString());
+                        role = GameTexts.FindText("role", party.GetHeroPartyRole(Hero.MainHero).ToString());
                     }
                     
                     MBTextManager.SetTextVariable("ROLE", contract.IsFreelancer ? role : contract.Template.Name);

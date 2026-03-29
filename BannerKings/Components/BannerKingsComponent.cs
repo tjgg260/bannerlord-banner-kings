@@ -55,6 +55,8 @@ namespace BannerKings.Components
             }
         }
 
+        public override Banner GetDefaultComponentBanner() => PartyOwner?.Clan?.Banner;
+
         public abstract void TickHourly();
     }
 }

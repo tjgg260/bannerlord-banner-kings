@@ -90,8 +90,8 @@ namespace BannerKings.Behaviours.Events.CourtEvents
         {
             get
             {
-                yield return new EventResolution(new TextObject(),
-                    new TextObject(),
+                yield return new EventResolution(new TextObject(""),
+                    new TextObject(""),
                     null,
                     1,
                     0.1f,

@@ -9,6 +9,7 @@ using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
+using BannerKings.Utils;
 namespace BannerKings.Behaviours
 {
     public class BKLordPropertyBehavior : BannerKingsBehavior
@@ -38,7 +39,7 @@ namespace BannerKings.Behaviours
             var kingdom = lord.Clan.Kingdom;
             if (lord == Hero.MainHero || kingdom == null || target.OwnerClan == null ||
                 target.OwnerClan.Kingdom != kingdom ||
-                FactionManager.GetEnemyKingdoms(kingdom).Any())
+                kingdom.FactionsAtWarWith.Any())
             {
                 return;
             }
@@ -49,7 +50,9 @@ namespace BannerKings.Behaviours
                 if (ShouldHaveCaravan(lord, (int)caravanCost))
                 {
                     lord.ChangeHeroGold(-(int)caravanCost);
-                    CaravanPartyComponent.CreateCaravanParty(lord, target);
+                    var caravanTemplates = lord.Culture.CaravanPartyTemplates;
+                    var caravanTemplate = caravanTemplates != null && caravanTemplates.Count > 0 ? caravanTemplates[0] : lord.Culture.DefaultPartyTemplate;
+                    CaravanPartyComponent.CreateCaravanParty(lord, target, caravanTemplate, false, null, null, false);
                 }
 
                 if (target.IsTown && !target.Town.Workshops.Any(x => x.Owner == lord))

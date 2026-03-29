@@ -7,6 +7,7 @@ using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
+using BannerKings.Utils;
 namespace BannerKings.Managers.Goals.Decisions
 {
     public class RequestPeerageDecision : Goal
@@ -92,9 +93,7 @@ namespace BannerKings.Managers.Goals.Decisions
             {
                 MBInformationManager.AddQuickInformation(new TextObject("{=5YsS2g7T}The Peers of {KINGDOM} will now vote on your request.")
                 .SetTextVariable("KINGDOM", Clan.PlayerClan.Kingdom.Name),
-                0,
-                null,
-                Utils.Helpers.GetKingdomDecisionSound());
+                0, null, null, Utils.Helpers.GetKingdomDecisionSound());
             }
         }
 

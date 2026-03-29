@@ -242,11 +242,8 @@ namespace BannerKings.UI.Extensions
                         policy.CanProposeOrDisavowPolicy = false;
                     }
                    
-                    if (diplomacy.IsActionEnabled)
-                    {
-                        diplomacy.ActionHint.HintText = text;
-                        diplomacy.IsActionEnabled = false;
-                    }
+                    // KingdomDiplomacyVM.IsActionEnabled/ActionHint removed in 1.3.x
+                    // diplomacy actions now handled through Actions list
                     
                     if (clans.CanExpelCurrentClan)
                     {

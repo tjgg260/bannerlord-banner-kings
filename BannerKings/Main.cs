@@ -18,7 +18,9 @@ using Bannerlord.UIExtenderEx;
 using HarmonyLib;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
+using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
+using System.Reflection;
 using BannerKings.Managers.Innovations.Eras;
 using BannerKings.Behaviours.Innovations;
 using BannerKings.Behaviours.Shipping;
@@ -138,7 +140,7 @@ namespace BannerKings
             campaignStarter.AddModel(new BKCategorySelector());
             campaignStarter.AddModel(new BKSettlementAccessModel());
             campaignStarter.AddModel(BannerKingsConfig.Instance.MarriageModel);
-            campaignStarter.AddModel(new BKItemValueModel());
+            //campaignStarter.AddModel(new BKItemValueModel());
             campaignStarter.AddModel(new BKTargetScoreModel());
 
             BKAttributes.Instance.Initialize();
@@ -156,10 +158,33 @@ namespace BannerKings
             //TaleWorlds.CampaignSystem.Campaign.Current.TournamentManager = new BKTournamentManager();
         }
 
+        private static readonly FieldInfo GameTextManagerField =
+            typeof(GameTexts).GetField("_gameTextManager", BindingFlags.NonPublic | BindingFlags.Static);
+
+        private static bool GameTextsFindTextPrefix(string id, string variation, ref TextObject __result)
+        {
+            if (GameTextManagerField != null && GameTextManagerField.GetValue(null) == null)
+            {
+                __result = new TextObject(id);
+                return false;
+            }
+            return true;
+        }
+
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
-            new Harmony("BannerKings").PatchAll();
+
+            var harmony = new Harmony("BannerKings");
+
+            // Guard GameTexts.FindText before PatchAll to prevent CampaignUIHelper
+            // static constructor from crashing when _gameTextManager is null
+            var findTextMethod = AccessTools.Method(typeof(GameTexts), "FindText");
+            var prefixMethod = AccessTools.Method(typeof(Main), nameof(GameTextsFindTextPrefix));
+            harmony.Patch(findTextMethod, prefix: new HarmonyMethod(prefixMethod));
+
+            harmony.PatchAll();
+
             Xtender.Register(typeof(Main).Assembly);
             Xtender.Enable();
         }

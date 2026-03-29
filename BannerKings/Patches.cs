@@ -145,7 +145,7 @@ namespace BannerKings.Patches
                     Console.Write("");
                 }
 
-                if (((float)mobileParty.Party.NumberOfAllMembers + 0.5f) / (float)mobileParty.LimitedPartySize <= 1f)
+                if (((float)mobileParty.Party.NumberOfAllMembers + 0.5f) / (float)mobileParty.Party.PartySizeLimit <= 1f)
                 {
                     foreach (Hero hero in settlement.Notables)
                     {
@@ -179,7 +179,7 @@ namespace BannerKings.Patches
                                     float y = (mobileParty.Army.LeaderParty == mobileParty) ? 0.5f : 0.67f;
                                     num5 = MathF.Pow(num5, y);
                                 }
-                                float num6 = (float)mobileParty.Party.NumberOfAllMembers / (float)mobileParty.LimitedPartySize;
+                                float num6 = (float)mobileParty.Party.NumberOfAllMembers / (float)mobileParty.Party.PartySizeLimit;
                                 if (num5 > num6 - 0.1f)
                                 {
                                     CharacterObject characterObject = hero.VolunteerTypes[num3];
@@ -274,7 +274,7 @@ namespace BannerKings.Patches
                     }
                 }
 
-                 disabledReason = TextObject.Empty;
+                 disabledReason = TextObject.GetEmpty();
                 __result = true;
                 return false;
             }
@@ -291,7 +291,7 @@ namespace BannerKings.Patches
                 FeudalTitle title = BannerKingsConfig.Instance.TitleManager.GetSovereignTitle(__instance.Kingdom);
                 TextObject leaderName = __instance.ArmyOwner != null ? 
                     __instance.ArmyOwner.Name : ((__instance.LeaderParty.PartyComponent.PartyOwner != null) ?
-                    __instance.LeaderParty.PartyComponent.PartyOwner.Name : TextObject.Empty);
+                    __instance.LeaderParty.PartyComponent.PartyOwner.Name : TextObject.GetEmpty());
                 TextObject result = new TextObject("{=nbmctMLk}{LEADER_NAME}{.o} Army");
                 if (title != null)
                 {
@@ -349,22 +349,23 @@ namespace BannerKings.Patches
             }
         }
 
-        [HarmonyPatch(typeof(Hero), nameof(Hero.CanHaveQuestsOrIssues))]
-        internal class CanHaveQuestsOrIssuesPatch
-        {
-            private static bool Prefix(Hero __instance, ref bool __result)
-            {
-                if (__instance.Issue != null)
-                {
-                    return false;
-                }
-
-                __result = __instance.IsActive && __instance.IsAlive;
-                CampaignEventDispatcher.Instance.CanHaveQuestsOrIssues(__instance, ref __result);
-
-                return false;
-            }
-        }
+        // Commented out: Hero.CanHaveQuestsOrIssues was removed in 1.3.x
+        // [HarmonyPatch(typeof(Hero), nameof(Hero.CanHaveQuestsOrIssues))]
+        // internal class CanHaveQuestsOrIssuesPatch
+        // {
+        //     private static bool Prefix(Hero __instance, ref bool __result)
+        //     {
+        //         if (__instance.Issue != null)
+        //         {
+        //             return false;
+        //         }
+        //
+        //         __result = __instance.IsActive && __instance.IsAlive;
+        //         CampaignEventDispatcher.Instance.CanHaveQuestsOrIssues(__instance, ref __result);
+        //
+        //         return false;
+        //     }
+        // }
 
         [HarmonyPatch(typeof(VillageNeedsToolsIssue), "IssueStayAliveConditions")]
         internal class VillageIssueStayAliveConditionsPatch

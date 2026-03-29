@@ -63,7 +63,7 @@ namespace BannerKings.UI.Extensions.Encyclopedia
             KnightsText = TextHelper.GetKnightTitle(clan.Culture, false, true).ToString();
 
             string highestTitle = null;
-            foreach (var member in clan.Lords)
+            foreach (var member in clan.AliveLords)
             {
                 if (member.IsDead || member.IsChild)
                 {
@@ -112,8 +112,8 @@ namespace BannerKings.UI.Extensions.Encyclopedia
 
                 if (companion.PartyBelongedTo != null && !companion.IsPartyLeader)
                 {
-                    var role = companion.PartyBelongedTo.GetHeroPerkRole(companion);
-                    if (role != SkillEffect.PerkRole.None)
+                    var role = companion.PartyBelongedTo.GetHeroPartyRole(companion);
+                    if (role != PartyRole.None)
                     {
                         roleTitle = GameTexts.FindText("str_clan_role", role.ToString().ToLower());
                     }

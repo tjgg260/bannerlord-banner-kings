@@ -175,8 +175,7 @@ namespace BannerKings.Behaviours.Diplomacy.Groups
                         .SetTextVariable("HERO", hero.Name)
                         .SetTextVariable("GROUP", this.Name),
                         0,
-                        hero.CharacterObject,
-                        Utils.Helpers.GetKingdomDecisionSound());
+                        hero.CharacterObject, null, Utils.Helpers.GetKingdomDecisionSound());
                 }
             }
         }
@@ -193,9 +192,7 @@ namespace BannerKings.Behaviours.Diplomacy.Groups
                     MBInformationManager.AddQuickInformation(new TextObject("{=O9K6i3iT}{HERO} has left the {GROUP} group.")
                         .SetTextVariable("HERO", hero.Name)
                         .SetTextVariable("GROUP", this.Name),
-                        0,
-                        hero.CharacterObject,
-                        Utils.Helpers.GetRelationDecisionSound());
+                        0, hero.CharacterObject, null, Utils.Helpers.GetRelationDecisionSound());
                 }
               
                 if (!forced)

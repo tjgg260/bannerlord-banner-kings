@@ -313,14 +313,14 @@ namespace BannerKings.Behaviours
             Kingdom kingdom = target.OwnerClan.Kingdom;
             if (kingdom == null) return;
 
-            bool peace = FactionManager.GetEnemyKingdoms(kingdom).Count() == 0;
+            bool peace = kingdom.FactionsAtWarWith.Count() == 0;
             bool construction = town.CurrentBuilding != null;
             WorkforcePolicy workforcePolicy = peace ? (construction ? WorkforcePolicy.Construction : WorkforcePolicy.Land_Expansion)
             : (town.InRebelliousState ? WorkforcePolicy.None : WorkforcePolicy.Martial_Law);
             BannerKingsConfig.Instance.PolicyManager.UpdateSettlementPolicy(target, new BKWorkforcePolicy(workforcePolicy, target));
 
             GarrisonPolicy garrisonPolicy = GarrisonPolicy.Standard;
-            if (!peace && town.GarrisonChange < 2) garrisonPolicy = GarrisonPolicy.Enlistment;
+            if (!peace && (town.GarrisonParty == null || town.GarrisonParty.MemberRoster.TotalManCount < 50)) garrisonPolicy = GarrisonPolicy.Enlistment;
 
             BannerKingsConfig.Instance.PolicyManager.UpdateSettlementPolicy(target, new BKGarrisonPolicy(garrisonPolicy, target)); 
 
@@ -361,7 +361,7 @@ namespace BannerKings.Behaviours
             /*var parties = new Mobile();
             var list = parties.GetPartiesAroundPosition(town.Settlement.GatePosition, 10f);
 
-            MobileParty party = list.FirstOrDefault(x => x.Party.TotalStrength > 25f && (x.IsBandit ||
+            MobileParty party = list.FirstOrDefault(x => x.Party.EstimatedStrength > 25f && (x.IsBandit ||
                (x.MapFaction.IsKingdomFaction && x.IsLordParty) && x.MapFaction != null &&
                town.MapFaction.GetStanceWith(x.MapFaction).IsAtWar));
 
@@ -602,12 +602,12 @@ namespace BannerKings.Behaviours
             {
                 float militia = settlement.Militia;
                 MobileParty garrisonParty = settlement.Town.GarrisonParty;
-                float num = (garrisonParty != null) ? garrisonParty.Party.TotalStrength : 0f;
+                float num = (garrisonParty != null) ? garrisonParty.Party.EstimatedStrength : 0f;
                 foreach (MobileParty mobileParty in settlement.Parties)
                 {
-                    if (mobileParty.IsLordParty && FactionManager.IsAlliedWithFaction(mobileParty.MapFaction, settlement.MapFaction))
+                    if (mobileParty.IsLordParty && !mobileParty.MapFaction.IsAtWarWith(settlement.MapFaction))
                     {
-                        num += mobileParty.Party.TotalStrength;
+                        num += mobileParty.Party.EstimatedStrength;
                     }
                 }
                 return militia >= num * 1.4f;
@@ -686,7 +686,7 @@ namespace BannerKings.Behaviours
             if (settlement.Town != null)
             {
                 Building building = settlement.Town.Buildings.FirstOrDefault(x => x.BuildingType.StringId == DefaultBuildingTypes.CastleGranary.StringId ||
-                                        x.BuildingType.StringId == DefaultBuildingTypes.SettlementGranary.StringId);
+                                        x.BuildingType.StringId == DefaultBuildingTypes.SettlementWarehouse.StringId);
                 if (building != null && building.CurrentLevel > 0)
                 {
                     factor -= building.CurrentLevel * 0.25f;

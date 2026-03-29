@@ -72,7 +72,7 @@ namespace BannerKings.Behaviours
 
         public ValueTuple<bool, TextObject> IsInstallingPreacherPossible(Hero hero, Settlement settlement)
         {
-            ValueTuple<bool, TextObject> result = new ValueTuple<bool, TextObject>(true, TextObject.Empty);
+            ValueTuple<bool, TextObject> result = new ValueTuple<bool, TextObject>(true, TextObject.GetEmpty());
             PopulationData data = BannerKingsConfig.Instance.PopulationManager.GetPopData(settlement);
 
             int piety = MBRandom.RoundRandomized(BannerKingsConfig.Instance.ReligionModel.GetAppointCost(hero, data.ReligionData).ResultNumber);
@@ -614,7 +614,7 @@ namespace BannerKings.Behaviours
             var clergyman = ReligionsManager.GetClergymanFromHeroHero(Hero.OneToOneConversationHero);
             var religion = ReligionsManager.GetClergymanReligion(clergyman);
             var playerReligion = ReligionsManager.GetHeroReligion(Hero.MainHero);
-            TextObject faithText = new TextObject();
+            TextObject faithText = new TextObject("");
             if (playerReligion != null)
             {
                 if (playerReligion.Faith.GetId() == religion.Faith.GetId())

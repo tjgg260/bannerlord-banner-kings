@@ -1,4 +1,5 @@
 using BannerKings.Extensions;
+using BannerKings.Utils;
 using Helpers;
 using SandBox.View.Map;
 using TaleWorlds.CampaignSystem;
@@ -39,7 +40,7 @@ namespace BannerKings.Behaviours.Camping
                             }
                         },
                         GameMenu.MenuAndOptionType.WaitMenuHideProgressAndHoursOption,
-                        TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.None,
+                        TaleWorlds.CampaignSystem.GameMenus.GameMenu.MenuOverlayType.None,
                         0f,
                         GameMenu.MenuFlags.None,
                         null);
@@ -77,22 +78,22 @@ namespace BannerKings.Behaviours.Camping
         private void UpdateCampMenu()
         {
             MobileParty.MainParty.ChangeVisual("map_icon_siege_camp_tent");
-            MBTextManager.SetTextVariable("FIEF", SettlementHelper.FindNearestSettlement(x => !x.IsHideout,
+            MBTextManager.SetTextVariable("FIEF", Compat.FindNearestSettlement(x => !x.IsHideout,
                 MobileParty.MainParty));
-            bool flag = PartyVisualManager.Current.GetVisualOfParty(MobileParty.MainParty.Party).HumanAgentVisuals != null;
+            bool flag = SandBox.View.Map.Managers.MobilePartyVisualManager.Current.GetPartyVisual(MobileParty.MainParty.Party).HumanAgentVisuals != null;
             if (flag)
             {
-                PartyVisualManager.Current.GetVisualOfParty(MobileParty.MainParty.Party).HumanAgentVisuals.GetEntity().SetVisibilityExcludeParents(false);
+                SandBox.View.Map.Managers.MobilePartyVisualManager.Current.GetPartyVisual(MobileParty.MainParty.Party).HumanAgentVisuals.GetEntity().SetVisibilityExcludeParents(false);
             }
-            bool flag2 = PartyVisualManager.Current.GetVisualOfParty(MobileParty.MainParty.Party).MountAgentVisuals != null;
+            bool flag2 = SandBox.View.Map.Managers.MobilePartyVisualManager.Current.GetPartyVisual(MobileParty.MainParty.Party).MountAgentVisuals != null;
             if (flag2)
             {
-                PartyVisualManager.Current.GetVisualOfParty(MobileParty.MainParty.Party).MountAgentVisuals.GetEntity().SetVisibilityExcludeParents(false);
+                SandBox.View.Map.Managers.MobilePartyVisualManager.Current.GetPartyVisual(MobileParty.MainParty.Party).MountAgentVisuals.GetEntity().SetVisibilityExcludeParents(false);
             }
-            bool flag3 = PartyVisualManager.Current.GetVisualOfParty(MobileParty.MainParty.Party).CaravanMountAgentVisuals != null;
+            bool flag3 = SandBox.View.Map.Managers.MobilePartyVisualManager.Current.GetPartyVisual(MobileParty.MainParty.Party).CaravanMountAgentVisuals != null;
             if (flag3)
             {
-                PartyVisualManager.Current.GetVisualOfParty(MobileParty.MainParty.Party).CaravanMountAgentVisuals.GetEntity().SetVisibilityExcludeParents(false);
+                SandBox.View.Map.Managers.MobilePartyVisualManager.Current.GetPartyVisual(MobileParty.MainParty.Party).CaravanMountAgentVisuals.GetEntity().SetVisibilityExcludeParents(false);
             }
         }
     }

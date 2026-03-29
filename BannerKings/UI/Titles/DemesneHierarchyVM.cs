@@ -1,5 +1,6 @@
 using BannerKings.Managers.Titles;
 using BannerKings.UI.Items;
+using TaleWorlds.Core.ViewModelCollection.ImageIdentifiers;
 using BannerKings.UI.Items.UI;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
@@ -81,11 +82,11 @@ namespace BannerKings.UI.Titles
                 Tree = new TitleElementVM(title, this);
                 if (kingdom != null)
                 {
-                    Banner = new ImageIdentifierVM(BannerCode.CreateFrom(kingdom.Banner), true);
+                    Banner = new BannerImageIdentifierVM(kingdom.Banner, true);
                 }
                 else if (title.deJure != null)
                 {
-                    Banner = new ImageIdentifierVM(BannerCode.CreateFrom(title.deJure.Clan.Banner), true);
+                    Banner = new BannerImageIdentifierVM(title.deJure.Clan.Banner, true);
                 }
                 Name = title.FullName.ToString();
             }

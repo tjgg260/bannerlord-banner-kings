@@ -31,17 +31,13 @@ namespace BannerKings.Components
             var maximum = (int)(garrisonRoster.TotalHealthyCount * 0.5f);
             if (maximum < 30) return null;
 
-            var patrol = MobileParty.CreateParty(GetPartyId(origin),
-                new GarrisonPartyComponent(origin),
-                delegate (MobileParty mobileParty)
-                {
-                    mobileParty.SetPartyUsedByQuest(true);
-                    mobileParty.Party.SetVisualAsDirty();
-                    mobileParty.Ai.SetInitiative(1f, 0.5f, float.MaxValue);
-                    mobileParty.ShouldJoinPlayerBattles = false;
-                    mobileParty.Aggressiveness = 1f;
-                    mobileParty.ActualClan = origin.OwnerClan;
-                });
+            var patrol = MobileParty.CreateParty(GetPartyId(origin), new GarrisonPartyComponent(origin));
+            patrol.SetPartyUsedByQuest(true);
+            patrol.Party.SetVisualAsDirty();
+            patrol.Ai.SetInitiative(1f, 0.5f, float.MaxValue);
+            patrol.ShouldJoinPlayerBattles = false;
+            patrol.Aggressiveness = 1f;
+            patrol.ActualClan = origin.OwnerClan;
 
             TroopRoster members = new TroopRoster(patrol.Party);
             for (int i = 0; i < MBRandom.RandomInt(minimum, maximum); i++)
@@ -52,7 +48,6 @@ namespace BannerKings.Components
                 garrisonRoster.AddToCounts(element.Character, -1);
             }
 
-            PartyVisualManager.Current.GetVisualOfParty(patrol.Party).OnStartup();
             patrol.InitializeMobilePartyAtPosition(members, new TroopRoster(patrol.Party), origin.GatePosition);
             GiveMounts(ref patrol);
             return patrol;
@@ -63,12 +58,12 @@ namespace BannerKings.Components
             if (MobileParty.MapEvent == null)
             {
                 if (HoursPatrolled > 48 && MobileParty.TargetParty == null) ReturnHome();
-                else if (MobileParty.Ai.DefaultBehavior != AiBehavior.EngageParty) 
-                    MobileParty.Ai.SetMovePatrolAroundSettlement(Home.BoundVillages.GetRandomElement().Settlement);
+                else if (MobileParty.DefaultBehavior != AiBehavior.EngageParty) 
+                    MobileParty.SetMovePatrolAroundSettlement(Home.BoundVillages.GetRandomElement().Settlement, MobileParty.NavigationType.Default, false);
             }
             HoursPatrolled++;
         }
 
-        private void ReturnHome() => MobileParty.Ai.SetMoveGoToSettlement(Home);
+        private void ReturnHome() => MobileParty.SetMoveGoToSettlement(Home, MobileParty.NavigationType.Default, false);
     }
 }

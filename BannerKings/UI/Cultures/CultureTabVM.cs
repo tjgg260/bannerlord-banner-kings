@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
+using TaleWorlds.Core.ViewModelCollection.ImageIdentifiers;
 using TaleWorlds.Core.ViewModelCollection.Information;
 using TaleWorlds.Core.ViewModelCollection.Selector;
 using TaleWorlds.Library;
@@ -38,7 +39,7 @@ namespace BannerKings.UI.Cultures
             Managers.Institutions.Religions.Religion rel = BannerKingsConfig.Instance.ReligionsManager.GetIdealReligion(Culture);
             if (rel != null)
             {
-                Banner = new ImageIdentifierVM(BannerCode.CreateFrom(rel.Faith.GetBanner()), true);
+                Banner = new BannerImageIdentifierVM(rel.Faith.GetBanner(), true);
             }
 
             foreach (Era era in DefaultEras.Instance.All)

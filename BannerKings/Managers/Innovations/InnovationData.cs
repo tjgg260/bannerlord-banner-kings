@@ -60,7 +60,7 @@ namespace BannerKings.Managers.Innovations
 
         public bool IsBuildingUpgradeAvailable(BuildingType building, int level)
         {
-            if (building == DefaultBuildingTypes.Wall || building == DefaultBuildingTypes.Fortifications)
+            if (building == DefaultBuildingTypes.CastleFortifications || building == DefaultBuildingTypes.SettlementFortifications)
             {
                 if (level == 2) return HasFinishedInnovation(DefaultInnovations.Instance.Masonry);
                 else if (level == 3) return HasFinishedInnovation(DefaultInnovations.Instance.AdvancedMasonry);
@@ -76,12 +76,12 @@ namespace BannerKings.Managers.Innovations
 
             if (!HasFinishedInnovation(DefaultInnovations.Instance.Aqueducts))
             {
-                buildings.Remove(DefaultBuildingTypes.SettlementAquaducts);
+                buildings.Remove(DefaultBuildingTypes.SettlementWaterworks);
             }
 
             if (!HasFinishedInnovation(DefaultInnovations.Instance.Forum))
             {
-                buildings.Remove(DefaultBuildingTypes.SettlementForum);
+                buildings.Remove(DefaultBuildingTypes.SettlementCourthouse);
             }
 
             if (!HasFinishedInnovation(DefaultInnovations.Instance.Theater))
@@ -137,7 +137,7 @@ namespace BannerKings.Managers.Innovations
                 MBInformationManager.AddQuickInformation(
                     new TextObject("{=uZPepQjz}The {CLAN} has assumed the role of cultural head of the {CULTURE} culture.")
                         .SetTextVariable("CLAN", clan.Name)
-                        .SetTextVariable("CULTURE", culture.Name), 0, null, "event:/ui/notification/relation");
+                        .SetTextVariable("CULTURE", culture.Name), 0, null, null, "event:/ui/notification/relation");
             }
         }
 
@@ -149,7 +149,7 @@ namespace BannerKings.Managers.Innovations
                 MBInformationManager.AddQuickInformation(
                     new TextObject("{=Hvt8EySp}The {CULTURE} is now fascinated by the {FASCINATION} innovation.")
                         .SetTextVariable("FASCINATION", fascination.Name)
-                        .SetTextVariable("CULTURE", culture.Name), 0, null, "event:/ui/notification/relation");
+                        .SetTextVariable("CULTURE", culture.Name), 0, null, null, "event:/ui/notification/relation");
             }
         }
 

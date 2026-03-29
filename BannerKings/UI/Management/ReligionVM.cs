@@ -1,3 +1,4 @@
+using TaleWorlds.Core.ImageIdentifiers;
 using BannerKings.Behaviours;
 using BannerKings.Managers.Populations;
 using BannerKings.UI.Items.UI;
@@ -266,7 +267,7 @@ namespace BannerKings.UI.Management
 
                     elements.Add(new InquiryElement(notable,
                         notable.Name.ToString(),
-                        new ImageIdentifier(CampaignUIHelper.GetCharacterCode(notable.CharacterObject, true)),
+                        new CharacterImageIdentifier(CampaignUIHelper.GetCharacterCode(notable.CharacterObject, true)),
                         possible,
                         hint.ToString()));
                 }

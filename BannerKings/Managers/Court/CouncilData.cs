@@ -188,7 +188,7 @@ namespace BannerKings.Managers.Court
 
             if (Location != null && MBRandom.RandomFloat < 0.02f)
             {
-                var template = Clan.Culture.NotableAndWandererTemplates.GetRandomElementWithPredicate(x => x.Occupation == Occupation.Wanderer);
+                var template = Clan.Culture.NotableTemplates.GetRandomElementWithPredicate(x => x.Occupation == Occupation.Wanderer);
                 Hero guest = HeroCreator.CreateSpecialHero(template, 
                     Location.Settlement, 
                     null, 

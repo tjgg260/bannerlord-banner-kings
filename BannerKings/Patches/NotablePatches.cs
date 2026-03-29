@@ -1,4 +1,4 @@
-﻿using BannerKings.Utils;
+using BannerKings.Utils;
 using HarmonyLib;
 using Helpers;
 using System;
@@ -18,22 +18,22 @@ namespace BannerKings.Patches
 {
     internal class NotablePatches
     {
-        [HarmonyPatch(typeof(HeroCreator), "CreateHeroAtOccupation")]
+        [HarmonyPatch(typeof(HeroCreator), "CreateNotable")]
         internal class CreateHeroAtOccupationPatch
         {
-            private static bool Prefix(Occupation neededOccupation, ref Hero __result, Settlement forcedHomeSettlement = null)
+            private static bool Prefix(Occupation occupation, Settlement settlement, ref Hero __result)
             {
-                Settlement settlement = forcedHomeSettlement ?? SettlementHelper.GetRandomTown(null);
+                if (settlement == null) settlement = SettlementHelper.GetRandomTown(null);
                 var data = BannerKingsConfig.Instance.PopulationManager.GetPopData(settlement);
                 IEnumerable<CharacterObject> enumerable;
                 if (data != null && data.CultureData != null)
                 {
-                    enumerable = from x in data.CultureData.GetRandomCulture().NotableAndWandererTemplates
-                                   where x.Occupation == neededOccupation
+                    enumerable = from x in data.CultureData.GetRandomCulture().NotableTemplates
+                                   where x.Occupation == occupation
                                    select x;
                 }
-                else enumerable = from x in settlement.Culture.NotableAndWandererTemplates
-                                  where x.Occupation == neededOccupation
+                else enumerable = from x in settlement.Culture.NotableTemplates
+                                  where x.Occupation == occupation
                                   select x;
 
                 int num = 0;
@@ -66,15 +66,15 @@ namespace BannerKings.Patches
                     float value = MBRandom.RandomFloat * 20f;
                     hero.AddPower(value);
                 }
-                if (neededOccupation != Occupation.Wanderer)
+                if (occupation != Occupation.Wanderer)
                 {
                     hero.ChangeState(Hero.CharacterStates.Active);
                 }
-                if (neededOccupation != Occupation.Wanderer)
+                if (occupation != Occupation.Wanderer)
                 {
                     EnterSettlementAction.ApplyForCharacterOnly(hero, settlement);
                 }
-                if (neededOccupation != Occupation.Wanderer)
+                if (occupation != Occupation.Wanderer)
                 {
                     int amount = 10000;
                     GiveGoldAction.ApplyBetweenCharacters(null, hero, amount, true);
@@ -88,11 +88,12 @@ namespace BannerKings.Patches
                 {
                     hero.SupporterOf = HeroHelper.GetRandomClanForNotable(hero);
                 }
-                if (neededOccupation != Occupation.Wanderer)
+                if (occupation != Occupation.Wanderer)
                 {
-                    typeof(HeroCreator)
-                        .GetMethod("AddRandomVarianceToTraits", BindingFlags.Static | BindingFlags.NonPublic)
-                        .Invoke(null, new object[] { hero });
+                    // AddRandomVarianceToTraits removed in 1.3.x
+                    var addVariance = typeof(HeroCreator)
+                        .GetMethod("AddRandomVarianceToTraits", BindingFlags.Static | BindingFlags.NonPublic);
+                    addVariance?.Invoke(null, new object[] { hero });
                 }
 
                 __result = hero;
@@ -188,7 +189,7 @@ namespace BannerKings.Patches
                     if (list2.Count > 0)
                     {
                         EnterSettlementAction.ApplyForCharacterOnly(
-                            HeroCreator.CreateHeroAtOccupation(list2.GetRandomElement(), settlement), settlement);
+                            HeroCreator.CreateNotable(list2.GetRandomElement(), settlement), settlement);
                     }
                 }
 
@@ -294,7 +295,7 @@ namespace BannerKings.Patches
                                 BindingFlags.Instance | BindingFlags.NonPublic)
                             .Invoke(__instance, null);
 
-                        if (!__instance.CurrentBuilding.BuildingType.IsDefaultProject)
+                        if (!__instance.CurrentBuilding.BuildingType.IsDefaultProject())
                         {
                             __instance.GetType().GetMethod("TickCurrentBuilding",
                                     BindingFlags.Instance | BindingFlags.NonPublic)

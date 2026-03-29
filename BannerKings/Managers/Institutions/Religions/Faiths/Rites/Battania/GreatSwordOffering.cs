@@ -17,8 +17,7 @@ namespace BannerKings.Managers.Institutions.Religions.Faiths.Rites.Battania
             MBInformationManager.AddQuickInformation(new TextObject("{=1kTYb7pF}The {ITEM} was sacrificed in a sacred lynn!")
                     .SetTextVariable("ITEM", base.selectedItem.GetModifiedItemName()),
                 0, 
-                actionTaker.CharacterObject,
-                "event:/ui/notification/relation");
+                actionTaker.CharacterObject, null, "event:/ui/notification/relation");
         }
 
         public override TextObject GetName() => new TextObject("{=GtRd2Arh}Lann-Tairgseadh");

@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using System.Collections.Generic;
 using static BannerKings.Managers.PopulationManager;
 using TaleWorlds.CampaignSystem.CampaignBehaviors;
@@ -31,6 +31,7 @@ using TaleWorlds.CampaignSystem.Roster;
 using BannerKings.CampaignContent;
 using BannerKings.CampaignContent.Economy.Markets;
 
+using BannerKings.Utils;
 namespace BannerKings.Patches
 {
     internal class EconomyPatches
@@ -57,7 +58,7 @@ namespace BannerKings.Patches
                 if (__result != null)
                 {
                     Kingdom kingdom = clan.Kingdom;
-                    if (clan != Clan.PlayerClan && kingdom != null && FactionManager.GetEnemyKingdoms(kingdom).Count() == 0)
+                    if (clan != Clan.PlayerClan && kingdom != null && kingdom.FactionsAtWarWith.Count() == 0)
                     {
                         if (!__result.IsClanLeader() && BannerKingsConfig.Instance.TitleManager.GetAllDeJure(__result).Count == 0)
                         {
@@ -77,7 +78,7 @@ namespace BannerKings.Patches
             {
                 if (clan.MapFaction is { IsKingdomFaction: true })
                 {
-                    var enemies = FactionManager.GetEnemyKingdoms(clan.Kingdom);
+                    var enemies = clan.Kingdom.FactionsAtWarWith;
                     foreach (var settlement in clan.Settlements)
                     {
                         if (settlement.IsFortification && settlement.Town.GarrisonParty != null)
@@ -108,7 +109,7 @@ namespace BannerKings.Patches
                         while (enumerator.MoveNext())
                         {
                             WarPartyComponent warPartyComponent = enumerator.Current;
-                            warPartyComponent.MobileParty.SetWagePaymentLimit(TaleWorlds.CampaignSystem.Campaign.Current.Models.PartyWageModel.MaxWage);
+                            warPartyComponent.MobileParty.SetWagePaymentLimit(TaleWorlds.CampaignSystem.Campaign.Current.Models.PartyWageModel.MaxWagePaymentLimit);
                         }
                         return false;
                     }
@@ -150,7 +151,7 @@ namespace BannerKings.Patches
                     var war = false;
                     if (clan.Kingdom != null)
                     {
-                        war = FactionManager.GetEnemyKingdoms(clan.Kingdom).Any();
+                        war = clan.Kingdom.FactionsAtWarWith.Any();
                     }
                     var income = TaleWorlds.CampaignSystem.Campaign.Current.Models.ClanFinanceModel.CalculateClanIncome(clan).ResultNumber *
                     (war ? 0.45f : 0.15f);
@@ -358,7 +359,7 @@ namespace BannerKings.Patches
                 }
 
                 List<MobileParty> list = new List<MobileParty>();
-                foreach (var hero in clan.Lords)
+                foreach (var hero in clan.AliveLords)
                     foreach (var caravanPartyComponent in hero.OwnedCaravans)
                         list.Add(caravanPartyComponent.MobileParty);
                         
@@ -543,7 +544,8 @@ namespace BannerKings.Patches
                     .ResultNumber;
         }
 
-        [HarmonyPatch(typeof(InventoryManager))]
+        // GetCurrentMarketData removed in 1.3.x
+        /*[HarmonyPatch(typeof(Helpers.InventoryScreenHelper))]
         internal class InventoryManagerPatches
         {
             [HarmonyPostfix]
@@ -557,14 +559,14 @@ namespace BannerKings.Patches
                     {
                         __result = settlement.Town.MarketData;
                     }
-                }    
+                }
             }
-        }
+        }*/
 
-        [HarmonyPatch(typeof(MapEvent), "LootDefeatedParties")]
+        [HarmonyPatch(typeof(MapEvent), "LootDefeatedPartyItems")]
         public class SiegePatch
         {
-            static bool Prefix(ref bool playerCaptured, ref ItemRoster __state, object lootCollector, MapEvent __instance)
+            static bool Prefix(ref ItemRoster __state, MapEvent __instance)
             {
                 __state = new ItemRoster();
                 var mapEventSide = __instance.GetMapEventSide(__instance.DefeatedSide);
@@ -572,14 +574,13 @@ namespace BannerKings.Patches
                              .Select(mapEventParty => mapEventParty.Party)
                              .Where(party => party?.IsSettlement == true && party.Settlement?.IsCastle == true))
                 {
-
                     __state.Add(party.ItemRoster);
                     party.ItemRoster.Clear();
                 }
                 return true;
             }
 
-            static void Postfix(ref bool playerCaptured, object lootCollector, MapEvent __instance, ItemRoster __state)
+            static void Postfix(MapEvent __instance, ItemRoster __state)
             {
                 var mapEventSide = __instance.GetMapEventSide(__instance.DefeatedSide);
                 foreach (var party in mapEventSide.Parties
@@ -782,7 +783,8 @@ namespace BannerKings.Patches
             return demand * MathF.Pow(priceIndex, factor) + prosperity;
         }
 
-        [HarmonyPatch(typeof(NotablesCampaignBehavior), "BalanceGoldAndPowerOfNotable")]
+        // BalanceGoldAndPowerOfNotable removed in 1.3.x
+        /*[HarmonyPatch(typeof(NotablesCampaignBehavior), "BalanceGoldAndPowerOfNotable")]
         internal class BalanceGoldAndPowerOfNotablePatch
         {
             private static bool Prefix(Hero notable)
@@ -797,7 +799,7 @@ namespace BannerKings.Patches
 
                 return true;
             }
-        }
+        }*/
 
         [HarmonyPatch(typeof(WorkshopsCampaignBehavior))]
         internal class WorkshopsCampaignBehaviorPatches
@@ -1064,13 +1066,13 @@ namespace BannerKings.Patches
             private static bool SendVillagerPartyToTradeBoundTown(MobileParty villagerParty)
             {
                 Settlement bound = villagerParty.HomeSettlement.Village.Bound;
-                if (!bound.IsUnderSiege) villagerParty.Ai.SetMoveGoToSettlement(bound);
+                if (!bound.IsUnderSiege) villagerParty.SetMoveGoToSettlement(bound, MobileParty.NavigationType.Default, false);
                 else
                 {
                     Settlement tradeBound = villagerParty.HomeSettlement.Village.TradeBound;
                     if (tradeBound != null)
                     {
-                        if (!tradeBound.IsUnderSiege) villagerParty.Ai.SetMoveGoToSettlement(tradeBound);
+                        if (!tradeBound.IsUnderSiege) villagerParty.SetMoveGoToSettlement(tradeBound, MobileParty.NavigationType.Default, false);
                     }
                 }
 
@@ -1083,16 +1085,10 @@ namespace BannerKings.Patches
         internal class VillagerSettlementEnterPatch
         {
             private static bool Prefix(
-                ref Dictionary<MobileParty, List<Settlement>> ____previouslyChangedVillagerTargetsDueToEnemyOnWay,
                 MobileParty mobileParty, Settlement settlement, Hero hero)
             {
                 if (mobileParty is { IsActive: true, IsVillager: true })
                 {
-                    if (____previouslyChangedVillagerTargetsDueToEnemyOnWay.ContainsKey(mobileParty))
-                    {
-                        ____previouslyChangedVillagerTargetsDueToEnemyOnWay[mobileParty].Clear();
-                    }
-
                     if (settlement.Town != null)
                     {
                         SellGoodsForTradeAction.ApplyByVillagerTrade(settlement, mobileParty);
@@ -1153,8 +1149,8 @@ namespace BannerKings.Patches
                         var result = TaleWorlds.CampaignSystem.Campaign.Current.Models.VillageProductionCalculatorModel.CalculateDailyProductionAmount(
                                 village, item);
 
-                        var num = MathF.Floor(result);
-                        var diff = result - num;
+                        var num = MathF.Floor(result.ResultNumber);
+                        var diff = result.ResultNumber - num;
                         num += GetDifferential(village, item, diff);
 
                         if (num > 0)
@@ -1205,7 +1201,7 @@ namespace BannerKings.Patches
                         }
                         else
                         {
-                            float distance = TaleWorlds.CampaignSystem.Campaign.Current.Models.MapDistanceModel.GetDistance(settlement, village.Settlement);
+                            float distance = Compat.GetDistance(settlement, village.Settlement);
                             float num4 = 0.5f * (600f / MathF.Pow(distance, 1.5f));
                             if (num4 > 0.5f)
                             {
@@ -1217,7 +1213,7 @@ namespace BannerKings.Patches
                                 bound.SetValue(village, village.Bound);
                             }
 
-                            float distance2 = TaleWorlds.CampaignSystem.Campaign.Current.Models.MapDistanceModel.GetDistance(settlement, village.TradeBound);
+                            float distance2 = Compat.GetDistance(settlement, village.TradeBound);
                             float num5 = 0.5f * (600f / MathF.Pow(distance2, 1.5f));
                             if (num5 > 0.5f)
                             {
@@ -1236,13 +1232,13 @@ namespace BannerKings.Patches
                         }
                         else
                         {
-                            float distance3 = TaleWorlds.CampaignSystem.Campaign.Current.Models.MapDistanceModel.GetDistance(settlement, village2.Settlement);
+                            float distance3 = Compat.GetDistance(settlement, village2.Settlement);
                             float num7 = 0.5f * (600f / MathF.Pow(distance3, 1.5f));
                             if (num7 > 0.5f)
                             {
                                 num7 = 0.5f;
                             }
-                            float distance4 = TaleWorlds.CampaignSystem.Campaign.Current.Models.MapDistanceModel.GetDistance(settlement, village2.TradeBound);
+                            float distance4 = Compat.GetDistance(settlement, village2.TradeBound);
                             float num8 = 0.5f * (600f / MathF.Pow(distance4, 1.5f));
                             if (num8 > 0.5f)
                             {

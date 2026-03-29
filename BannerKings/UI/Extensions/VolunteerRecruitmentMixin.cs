@@ -11,7 +11,7 @@ using TaleWorlds.Localization;
 
 namespace BannerKings.UI.Extensions
 {
-    [ViewModelMixin("RefreshTownManagementStats")]
+    [ViewModelMixin("RefreshValues")]
     public class VolunteerRecruitmentMixin : BaseViewModelMixin<RecruitVolunteerVM>
     {
         private readonly RecruitVolunteerVM volunteerVm;

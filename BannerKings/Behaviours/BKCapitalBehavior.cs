@@ -45,9 +45,7 @@ namespace BannerKings.Behaviours
                     MBInformationManager.AddQuickInformation(new TextObject("{=5gcHVbpa}{CAPITAL} is now the capital of {KINGDOM}")
                         .SetTextVariable("CAPITAL", town.Name)
                         .SetTextVariable("KINGDOM", kingdom.Name),
-                        0,
-                        null,
-                        Utils.Helpers.GetKingdomDecisionSound());
+                        0, null, null, Utils.Helpers.GetKingdomDecisionSound());
                 }
             }
         }

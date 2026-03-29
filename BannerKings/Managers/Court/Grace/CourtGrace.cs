@@ -11,6 +11,7 @@ using TaleWorlds.Localization;
 using TaleWorlds.SaveSystem;
 using static BannerKings.Managers.Court.Grace.CourtExpense;
 
+using BannerKings.Utils;
 namespace BannerKings.Managers.Court.Grace
 {
     public class CourtGrace
@@ -95,7 +96,7 @@ namespace BannerKings.Managers.Court.Grace
                 Town market = data.Location;
                 if (!market.IsTown)
                 {
-                    market = SettlementHelper.FindNearestTown(x => x.MapFaction == market.MapFaction)?.Town;
+                    market = Compat.FindNearestTown(x => x.MapFaction == market.MapFaction);
                 }
 
                 BuyGoodsAction.BuyBestToWorst(data.Location.Settlement.Stash,

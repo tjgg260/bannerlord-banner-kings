@@ -25,9 +25,7 @@ namespace BannerKings.Managers.Institutions.Religions.Faiths.Rites
             MBInformationManager.AddQuickInformation(new TextObject("{=03vJzoze}{HERO} has completed the {RITE} ritual.")
                     .SetTextVariable("HERO", actionTaker.Name)
                     .SetTextVariable("RITE", GetName()),
-                0, 
-                actionTaker.CharacterObject, 
-                Utils.Helpers.GetRelationDecisionSound());
+                0, actionTaker.CharacterObject, null, Utils.Helpers.GetRelationDecisionSound());
 
             var piety = GetPietyReward();
             BannerKingsConfig.Instance.ReligionsManager.AddPiety(actionTaker, piety, true);

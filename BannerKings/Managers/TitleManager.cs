@@ -482,9 +482,7 @@ namespace BannerKings.Managers
             MBInformationManager.AddQuickInformation(new TextObject("{=dFTm4AbE}The {TITLE} has been founded by {FOUNDER}.")
                 .SetTextVariable("FOUNDER", action.ActionTaker.EncyclopediaLinkWithName)
                 .SetTextVariable("TITLE", title.FullName),
-                0,
-                null,
-                Utils.Helpers.GetKingdomDecisionSound());
+                0, null, null, Utils.Helpers.GetKingdomDecisionSound());
 
             title.RemoveClaim(action.ActionTaker);
             ExecuteOwnershipChange(null, action.ActionTaker, title, true);
@@ -602,8 +600,7 @@ namespace BannerKings.Managers
                     .SetTextVariable("GRANTOR", grantor.Name)
                     .SetTextVariable("TITLE", action.Title.FullName), 
                     300, 
-                    grantor.CharacterObject,
-                    Utils.Helpers.GetKingdomDecisionSound());
+                    grantor.CharacterObject, null, Utils.Helpers.GetKingdomDecisionSound());
 
                 InformationManager.DisplayMessage(new InformationMessage(
                     new TextObject("{=!}{GRANTOR} of the {CLAN} has decided to grant you the {TITLE} in a gesture of good will.")

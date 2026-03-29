@@ -6,6 +6,7 @@ using TaleWorlds.Core;
 using TaleWorlds.Localization;
 using TaleWorlds.SaveSystem;
 
+using BannerKings.Utils;
 namespace BannerKings.Components
 {
     internal class EstateComponent : BannerKingsComponent
@@ -26,16 +27,14 @@ namespace BannerKings.Components
 
         private static MobileParty CreateParty(string id, Estate estate, Settlement origin)
         {
-            return MobileParty.CreateParty(id, new EstateComponent(origin, estate),
-                delegate(MobileParty mobileParty)
-                {
-                    mobileParty.SetPartyUsedByQuest(true);
-                    mobileParty.Party.SetVisualAsDirty();
-                    mobileParty.Ai.SetInitiative(0.5f, 1f, float.MaxValue);
-                    mobileParty.ShouldJoinPlayerBattles = true;
-                    mobileParty.Aggressiveness = 0.1f;
-                    mobileParty.SetWagePaymentLimit(TaleWorlds.CampaignSystem.Campaign.Current.Models.PartyWageModel.MaxWage);
-                });
+            var mobileParty = MobileParty.CreateParty(id, new EstateComponent(origin, estate));
+            mobileParty.SetPartyUsedByQuest(true);
+            mobileParty.Party.SetVisualAsDirty();
+            mobileParty.Ai.SetInitiative(0.5f, 1f, float.MaxValue);
+            mobileParty.ShouldJoinPlayerBattles = true;
+            mobileParty.Aggressiveness = 0.1f;
+            mobileParty.SetWagePaymentLimit(TaleWorlds.CampaignSystem.Campaign.Current.Models.PartyWageModel.MaxWagePaymentLimit);
+            return mobileParty;
         }
 
         public static void CreateRetinue(Estate estate)
@@ -45,8 +44,7 @@ namespace BannerKings.Components
             {  
                 MobileParty retinue = CreateParty($"bk_retinue_{origin}_{estate}_{MBRandom.RandomInt()}", estate, origin);
                 retinue.InitializeMobilePartyAtPosition(origin.Culture.MilitiaPartyTemplate,
-                origin.GatePosition,
-                (int)(estate.MaxManpower.ResultNumber * 0.5f));
+                origin.GatePosition);
                 GiveMounts(ref retinue);
                 GiveFood(ref retinue);
                 EnterSettlementAction.ApplyForParty(retinue, origin);
@@ -59,19 +57,19 @@ namespace BannerKings.Components
             var behavior = Behavior;
             if (behavior == AiBehavior.EscortParty)
             {
-                MobileParty.Ai.SetMoveEscortParty(Escort);
+                MobileParty.SetMoveEscortParty(Escort, MobileParty.NavigationType.Default, false);
                 if (MobileParty.CurrentSettlement != null) LeaveSettlementAction.ApplyForParty(MobileParty);
             }
             else if (behavior == AiBehavior.GoToSettlement || behavior == AiBehavior.Hold)
             {
-                MobileParty.Ai.SetMoveGoToSettlement(HomeSettlement);
-                if (TaleWorlds.CampaignSystem.Campaign.Current.Models.MapDistanceModel.GetDistance(Party.MobileParty, HomeSettlement) <= 2f)
+                MobileParty.SetMoveGoToSettlement(HomeSettlement, MobileParty.NavigationType.Default, false);
+                if (Compat.GetDistance(Party.MobileParty, HomeSettlement) <= 2f)
                     EnterSettlementAction.ApplyForParty(Party.MobileParty, HomeSettlement);
             }
 
             if (MobileParty.CurrentSettlement == null && Behavior != AiBehavior.EscortParty) 
             {
-                MobileParty.Ai.SetMoveGoToSettlement(HomeSettlement);
+                MobileParty.SetMoveGoToSettlement(HomeSettlement, MobileParty.NavigationType.Default, false);
             }
         }
     }

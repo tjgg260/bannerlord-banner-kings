@@ -95,8 +95,8 @@ namespace BannerKings.Models.BKModels
             {
                 if (settlement.IsTown)
                 {
-                    var walls = settlement.Town.Buildings.First(x => x.BuildingType == DefaultBuildingTypes.Fortifications);
-                    result.Add(walls.CurrentLevel * 5000f, DefaultBuildingTypes.Fortifications.Name);
+                    var walls = settlement.Town.Buildings.First(x => x.BuildingType == DefaultBuildingTypes.SettlementFortifications);
+                    result.Add(walls.CurrentLevel * 5000f, DefaultBuildingTypes.SettlementFortifications.Name);
 
                     InnovationData innovationData = BannerKingsConfig.Instance.InnovationsManager.GetInnovationData(settlement.Culture);
                     if (innovationData != null && innovationData.HasFinishedInnovation(DefaultInnovations.Instance.Burgage))
@@ -106,8 +106,8 @@ namespace BannerKings.Models.BKModels
                 }
                 else
                 {
-                    var walls = settlement.Town.Buildings.First(x => x.BuildingType == DefaultBuildingTypes.Wall);
-                    result.Add(walls.CurrentLevel * 1500f, DefaultBuildingTypes.Fortifications.Name);
+                    var walls = settlement.Town.Buildings.First(x => x.BuildingType == DefaultBuildingTypes.CastleFortifications);
+                    result.Add(walls.CurrentLevel * 1500f, DefaultBuildingTypes.SettlementFortifications.Name);
                 }
 
                 result.Add(settlement.Town.Prosperity / 5f, GameTexts.FindText("str_map_tooltip_prosperity"));

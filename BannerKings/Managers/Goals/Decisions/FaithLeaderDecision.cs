@@ -1,3 +1,4 @@
+using TaleWorlds.Core.ImageIdentifiers;
 using BannerKings.Managers.Institutions.Religions;
 using System;
 using System.Collections.Generic;
@@ -103,7 +104,7 @@ namespace BannerKings.Managers.Goals.Decisions
                     .SetTextVariable("PIETY", (int)cost)
                     .SetTextVariable("PIETY_ICON", Utils.TextHelper.PIETY_ICON)
                     .ToString(),
-                    new ImageIdentifier(CampaignUIHelper.GetCharacterCode(hero.CharacterObject, true)),
+                    new CharacterImageIdentifier(CampaignUIHelper.GetCharacterCode(hero.CharacterObject, true)),
                     hasPiety && faction,
                     explanation.ToString()));
             }

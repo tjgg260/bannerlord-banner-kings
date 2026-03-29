@@ -19,6 +19,7 @@ using static BannerKings.Managers.Policies.BKCriminalPolicy;
 using static BannerKings.Managers.Policies.BKTaxPolicy;
 using static BannerKings.Managers.PopulationManager;
 
+using BannerKings.Utils;
 namespace BannerKings.Models.Vanilla
 {
     public class BKLoyaltyModel : DefaultSettlementLoyaltyModel
@@ -314,13 +315,14 @@ namespace BannerKings.Models.Vanilla
         {
             if (town.BuildingsInProgress.IsEmpty<Building>())
             {
-                BuildingHelper.AddDefaultDailyBonus(town, BuildingEffectEnum.LoyaltyDaily, ref explainedNumber);
+                foreach (var b in town.Buildings)
+                    b.AddEffectOfBuilding(BuildingEffectEnum.Loyalty, ref explainedNumber);
             }
 
             foreach (var building in town.Buildings)
             {
                 var buildingEffectAmount = building.GetBuildingEffectAmount(BuildingEffectEnum.Loyalty);
-                if (!building.BuildingType.IsDefaultProject && buildingEffectAmount > 0f)
+                if (!building.BuildingType.IsDefaultProject() && buildingEffectAmount > 0f)
                 {
                     explainedNumber.Add(buildingEffectAmount, building.Name);
                 }

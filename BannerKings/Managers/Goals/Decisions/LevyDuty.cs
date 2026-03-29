@@ -1,3 +1,4 @@
+using TaleWorlds.Core.ImageIdentifiers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,7 +73,7 @@ namespace BannerKings.Managers.Goals.Decisions
                 vassals.Add(new InquiryElement(
                     vassal,
                     vassal.Name.ToString(),
-                    new ImageIdentifier(CampaignUIHelper.GetCharacterCode(vassal.CharacterObject)),
+                    new CharacterImageIdentifier(CampaignUIHelper.GetCharacterCode(vassal.CharacterObject)),
                     true,
                     string.Empty));
             }

@@ -1,3 +1,4 @@
+using TaleWorlds.Core.ImageIdentifiers;
 using BannerKings.Behaviours.Feasts;
 using BannerKings.Settings;
 using System;
@@ -12,6 +13,7 @@ using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using static BannerKings.Behaviours.Feasts.Feast;
 
+using BannerKings.Utils;
 namespace BannerKings.Managers.Goals.Decisions
 {
     public class OrganizeFeastDecision : Goal
@@ -58,7 +60,7 @@ namespace BannerKings.Managers.Goals.Decisions
             {
                 failedReasons.Add(new TextObject("{=JDFpx1eN}No kingdom."));
             }
-            else if (FactionManager.GetEnemyKingdoms(GetFulfiller().Clan.Kingdom).Count() > 0)
+            else if (GetFulfiller().Clan.Kingdom.FactionsAtWarWith.Count() > 0)
             {
                 failedReasons.Add(new TextObject("{=gn6WKs03}Cannot organize feasts during wars"));
             }
@@ -128,7 +130,7 @@ namespace BannerKings.Managers.Goals.Decisions
                     .SetTextVariable("CLAN", clan.Name)
                     .SetTextVariable("INFLUENCE", GuestInfluenceCost(clan))
                     .ToString(), 
-                    new ImageIdentifier(clan.Banner)));
+                    new BannerImageIdentifier(clan.Banner, false)));
             }
 
             MBInformationManager.ShowMultiSelectionInquiry(new MultiSelectionInquiryData(

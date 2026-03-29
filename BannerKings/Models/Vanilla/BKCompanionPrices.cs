@@ -1,4 +1,4 @@
-﻿using Helpers;
+using Helpers;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.CharacterDevelopment;
 using TaleWorlds.CampaignSystem.Extensions;
@@ -6,6 +6,7 @@ using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.Core;
 using TaleWorlds.ObjectSystem;
 
+using BannerKings.Utils;
 namespace BannerKings.Models.Vanilla
 {
     public class BKCompanionPrices : DefaultCompanionHiringPriceCalculationModel
@@ -23,7 +24,7 @@ namespace BannerKings.Models.Vanilla
                 var town = currentSettlement?.Town;
                 if (town == null)
                 {
-                    town = SettlementHelper.FindNearestTown().Town;
+                    town = Compat.FindNearestTown();
                 }
 
                 var num = 0f;

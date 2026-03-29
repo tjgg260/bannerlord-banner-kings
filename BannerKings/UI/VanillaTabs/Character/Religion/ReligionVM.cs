@@ -1,5 +1,6 @@
 using BannerKings.Managers.Institutions.Religions;
 using BannerKings.Managers.Institutions.Religions.Doctrines;
+using TaleWorlds.Core.ViewModelCollection.ImageIdentifiers;
 using BannerKings.Managers.Populations;
 using BannerKings.UI.Items;
 using BannerKings.UI.Items.UI;
@@ -87,7 +88,7 @@ namespace BannerKings.UI.VanillaTabs.Character.Religion
 
             if (currentReligion == null) return;
 
-            Banner = new ImageIdentifierVM(BannerCode.CreateFrom(currentReligion.Faith.GetBanner()), true);
+            Banner = new BannerImageIdentifierVM(currentReligion.Faith.GetBanner(), true);
             Name = currentReligion.Faith.GetFaithName().ToString();
             Description = currentReligion.Faith.GetFaithDescription().ToString();
             GroupName = currentReligion.Faith.FaithGroup.Name.ToString();

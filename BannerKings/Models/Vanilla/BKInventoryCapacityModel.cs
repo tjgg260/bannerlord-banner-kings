@@ -8,10 +8,10 @@ namespace BannerKings.Models.Vanilla
     public class BKInventoryCapacityModel : DefaultInventoryCapacityModel
     {
         public override ExplainedNumber CalculateInventoryCapacity(MobileParty mobileParty,
-            bool includeDescriptions = false, int additionalTroops = 0, int additionalSpareMounts = 0,
+            bool includeDescriptions = false, bool isCurrentlyAtSea = false, int additionalTroops = 0, int additionalSpareMounts = 0,
             int additionalPackAnimals = 0, bool includeFollowers = false)
         {
-            var result = base.CalculateInventoryCapacity(mobileParty, includeDescriptions, additionalTroops,
+            var result = base.CalculateInventoryCapacity(mobileParty, includeDescriptions, isCurrentlyAtSea, additionalTroops,
                 additionalSpareMounts, additionalPackAnimals, includeFollowers);
 
             var leader = mobileParty.LeaderHero;

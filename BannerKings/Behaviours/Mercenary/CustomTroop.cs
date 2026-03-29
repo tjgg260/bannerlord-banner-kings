@@ -34,7 +34,7 @@ namespace BannerKings.Behaviours.Mercenary
         private void FillCharacter(CharacterObject reference)
         {
             MBObjectManager.Instance.RegisterObject(Character);
-            Character.Culture = reference.Culture;
+            AccessTools.Property(typeof(BasicCharacterObject), "Culture")?.SetValue(Character, reference.Culture);
 
             Character.Age = reference.Age;
             AccessTools.Method(reference.GetType(), "InitializeHeroBasicCharacterOnAfterLoad")

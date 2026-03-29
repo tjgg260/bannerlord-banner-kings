@@ -1,4 +1,5 @@
 using BannerKings.Behaviours.Diplomacy.Groups.Demands;
+using BannerKings.Utils;
 using BannerKings.Utils.Models;
 using Helpers;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ namespace BannerKings.Behaviours.Diplomacy.Wars
             Dictionary<Town, int> attackerDic = new Dictionary<Town, int>();
             foreach (var fief in Attacker.Fiefs)
             {
-                Settlement settlement = SettlementHelper.FindNearestFortification(x => x.Town != null && x.MapFaction == Defender, fief.Settlement);
+                Settlement settlement = Compat.FindNearestFortification(x => x.Town != null && x.MapFaction == Defender, fief.Settlement);
                 if (settlement != null)
                 {
                     Town town = settlement.Town;
@@ -52,7 +53,7 @@ namespace BannerKings.Behaviours.Diplomacy.Wars
             Dictionary<Town, int> defenderDic = new Dictionary<Town, int>();
             foreach (var fief in Defender.Fiefs)
             {
-                Settlement settlement = SettlementHelper.FindNearestFortification(x => 
+                Settlement settlement = Compat.FindNearestFortification(x => 
                 {
                     bool nullTown = x.Town != null;
                     bool attacker = x.MapFaction == Attacker;
@@ -197,7 +198,7 @@ namespace BannerKings.Behaviours.Diplomacy.Wars
         {
             if (Demand != null)
             {
-                bool success = Attacker.GetStanceWith(Defender).GetDailyTributePaid(Defender) > 0;
+                bool success = Attacker.GetStanceWith(Defender).GetDailyTributeToPay(Defender) > 0;
                 Demand.EndRebellion(Attacker as Kingdom, Defender as Kingdom, success);
             }
 

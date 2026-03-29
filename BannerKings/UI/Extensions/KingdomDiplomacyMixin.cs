@@ -11,6 +11,7 @@ using TaleWorlds.Core.ViewModelCollection.Information;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
+using BannerKings.Utils;
 namespace BannerKings.UI.Extensions
 {
     [ViewModelMixin("OnSetCurrentDiplomacyItem")]
@@ -46,7 +47,7 @@ namespace BannerKings.UI.Extensions
             war = null;
             WarExists = false;
             PeaceExists = false;
-            base.ViewModel.ProposeActionExplanationText = new TextObject("{=kyB8tkgY}Consider proposing a diplomatic action").ToString();
+            // ProposeActionExplanationText removed in 1.3.x
             if (kingdomDiplomacy.CurrentSelectedDiplomacyItem != null)
             {
                 if (kingdomDiplomacy.CurrentSelectedDiplomacyItem is KingdomWarItemVM)
@@ -123,7 +124,7 @@ namespace BannerKings.UI.Extensions
                 }
 
                 StanceLink stance = currentKingdom.GetStanceWith(targetKingdom);
-                if (stance.IsAllied)
+                if (stance.IsAllied())
                 {
                     AllianceText = new TextObject("{=GTQCGxvy}In Effect").ToString();
                     TruceText = new TextObject("{=d92ORtRp}Implicit (Alliance)").ToString();

@@ -10,7 +10,7 @@ namespace BannerKings.Extensions
         public static List<Village> GetActualVillages(this Clan clan)
         {
             var list = new List<Village>();
-            foreach (var member in clan.Lords)
+            foreach (var member in clan.AliveLords)
             {
                 list.AddRange(member.GetVillages());
             }

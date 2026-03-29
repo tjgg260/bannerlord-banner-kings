@@ -1,3 +1,4 @@
+using TaleWorlds.Core.ImageIdentifiers;
 using BannerKings.Behaviours.Marriage;
 using BannerKings.Managers.Institutions.Religions;
 using BannerKings.UI.Items;
@@ -262,7 +263,7 @@ namespace BannerKings.UI.Marriages
             {
                 list.Add(new InquiryElement(hero,
                     hero.Name.ToString(),
-                    new ImageIdentifier(CampaignUIHelper.GetCharacterCode(hero.CharacterObject, true))));
+                    new CharacterImageIdentifier(CampaignUIHelper.GetCharacterCode(hero.CharacterObject, true))));
             }
 
             MBInformationManager.ShowMultiSelectionInquiry(new MultiSelectionInquiryData(
@@ -290,7 +291,7 @@ namespace BannerKings.UI.Marriages
             {
                 list.Add(new InquiryElement(hero,
                     hero.Name.ToString(),
-                    new ImageIdentifier(CampaignUIHelper.GetCharacterCode(hero.CharacterObject, true))));
+                    new CharacterImageIdentifier(CampaignUIHelper.GetCharacterCode(hero.CharacterObject, true))));
             }
 
             MBInformationManager.ShowMultiSelectionInquiry(new MultiSelectionInquiryData(

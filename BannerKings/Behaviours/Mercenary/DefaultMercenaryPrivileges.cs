@@ -70,9 +70,7 @@ namespace BannerKings.Behaviours.Mercenary
                         MBInformationManager.AddQuickInformation(new TextObject("{=7OaTLJKt}You are now the owner of {WORKSHOP} at {TOWN}!")
                             .SetTextVariable("WORKSHOP", workshop.Name)
                             .SetTextVariable("TOWN", workshop.Settlement.Name),
-                            0,
-                            null,
-                            Utils.Helpers.GetRelationDecisionSound());
+                            0, null, null, Utils.Helpers.GetRelationDecisionSound());
                         return true;
                     }
 

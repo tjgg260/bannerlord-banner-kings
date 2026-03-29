@@ -1,4 +1,5 @@
 ﻿using BannerKings.Managers.Skills;
+using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.Party;
 
@@ -8,7 +9,7 @@ namespace BannerKings.Models.Vanilla
     {
 
 
-        public override float GetDisorganizedStateDuration(MobileParty party)
+        public override ExplainedNumber GetDisorganizedStateDuration(MobileParty party)
         {
             var result = base.GetDisorganizedStateDuration(party);
             if (party.LeaderHero != null)
@@ -16,12 +17,12 @@ namespace BannerKings.Models.Vanilla
                 var data = BannerKingsConfig.Instance.EducationManager.GetHeroEducation(party.LeaderHero);
                 if (data.HasPerk(BKPerks.Instance.OutlawKidnapper))
                 {
-                    result *= 0.7f;
+                    result.AddFactor(-0.3f, BKPerks.Instance.OutlawKidnapper.Name);
                 }
 
                 if (data.HasPerk(BKPerks.Instance.CommanderLogistician))
                 {
-                    result *= 0.9f;
+                    result.AddFactor(-0.1f, BKPerks.Instance.CommanderLogistician.Name);
                 }
             }
 

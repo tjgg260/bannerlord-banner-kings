@@ -85,7 +85,16 @@ namespace BannerKings.Models.Vanilla
 
         public override ExplainedNumber CalculateClanGoldChange(Clan clan, bool includeDescriptions = false, bool applyWithdrawals = false, bool includeDetails = false)
         {
-            var baseResult = base.CalculateClanGoldChange(clan, true, applyWithdrawals, includeDetails);
+            ExplainedNumber baseResult;
+            try
+            {
+                baseResult = base.CalculateClanGoldChange(clan, true, applyWithdrawals, includeDetails);
+            }
+            catch (System.TypeInitializationException)
+            {
+                baseResult = new ExplainedNumber(0f, includeDescriptions);
+            }
+
             if (BannerKingsConfig.Instance.TitleManager == null)
             {
                 return baseResult;
@@ -158,7 +167,7 @@ namespace BannerKings.Models.Vanilla
                 }
             }
 
-            /*if (!clan.IsUnderMercenaryService && clan.Kingdom != null && FactionManager.GetEnemyKingdoms(clan.Kingdom).Any())
+            /*if (!clan.IsUnderMercenaryService && clan.Kingdom != null && clan.Kingdom.FactionsAtWarWith.Any())
             {
                 var title = BannerKingsConfig.Instance.TitleManager.GetSovereignTitle(kingdom);
                 if (title is {Contract: { }} &&

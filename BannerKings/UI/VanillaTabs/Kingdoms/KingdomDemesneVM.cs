@@ -13,6 +13,7 @@ using TaleWorlds.Core.ViewModelCollection.Selector;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
+using BannerKings.Utils;
 namespace BannerKings.UI.VanillaTabs.Kingdoms
 {
     public class KingdomDemesneVM : BannerKingsViewModel
@@ -86,7 +87,7 @@ namespace BannerKings.UI.VanillaTabs.Kingdoms
 
                 foreach (ContractAspect aspect in Title.Contract.ContractAspects)
                 {
-                    TextObject hint = TextObject.Empty;
+                    TextObject hint = TextObject.GetEmpty();
                     if (aspect is ContractRight) hint = (aspect as ContractRight).EffectText;
 
                     Aspects.Add(new TripleStringItemVM(aspect.AspectType.ToString(),

@@ -17,6 +17,7 @@ using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
+using BannerKings.Utils;
 namespace BannerKings.Behaviours.Marriage
 {
     public class BKMarriageBehavior : CampaignBehaviorBase
@@ -591,9 +592,7 @@ namespace BannerKings.Behaviours.Marriage
             MBInformationManager.AddQuickInformation(new TextObject("{=0enBgkVo}{HERO1} and {HERO2} are now betrothed! Romantic action can be pursued.")
                 .SetTextVariable("HERO", proposedMarriage.Proposer.Name)
                 .SetTextVariable("HERO2", proposedMarriage.Proposed.Name),
-                100,
-                null,
-                Utils.Helpers.GetKingdomDecisionSound());
+                100, null, null, Utils.Helpers.GetKingdomDecisionSound());
         }
 
         public void ApplyMarriageContract()
@@ -621,7 +620,8 @@ namespace BannerKings.Behaviours.Marriage
 
                 if (proposedMarriage.Alliance)
                 {
-                    FactionManager.DeclareAlliance(proposedMarriage.Proposer.MapFaction,
+                    // FactionManager.DeclareAlliance removed in 1.3.x
+                    FactionManager.SetNeutral(proposedMarriage.Proposer.MapFaction,
                         proposedMarriage.Proposed.MapFaction);
                 }
 
@@ -701,7 +701,7 @@ namespace BannerKings.Behaviours.Marriage
             {
 
                 Hero proposer = (Hero)AccessTools.Field("_playerProposalHero").GetValue(__instance);
-                foreach (Hero hero in from x in Hero.OneToOneConversationHero.Clan.Lords
+                foreach (Hero hero in from x in Hero.OneToOneConversationHero.Clan.AliveLords
                                       orderby x.Age descending
                                       select x)
                 {

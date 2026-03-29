@@ -60,7 +60,7 @@ namespace BannerKings.Behaviours.Shipping
                         }
                     },
                     GameMenu.MenuAndOptionType.WaitMenuHideProgressAndHoursOption,
-                    TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.None);
+                    TaleWorlds.CampaignSystem.GameMenus.GameMenu.MenuOverlayType.None);
                 });
 
             CampaignEvents.TickEvent.AddNonSerializedListener(this, 
@@ -86,7 +86,7 @@ namespace BannerKings.Behaviours.Shipping
                 {
                     foreach (var caravan in MobileParty.AllCaravanParties)
                     {
-                        caravan.Party.UpdateVisibilityAndInspected(0f);
+                        caravan.Party.UpdateVisibilityAndInspected(caravan.Position, 0f);
                     }
                 });
         }
@@ -199,7 +199,7 @@ namespace BannerKings.Behaviours.Shipping
                     MBCommon.UnPauseGameEngine();
                 }
             }
-            party.Party.UpdateVisibilityAndInspected(0f);
+            party.Party.UpdateVisibilityAndInspected(party.Position, 0f);
             party.IsVisible = false;
         }
 
@@ -216,14 +216,14 @@ namespace BannerKings.Behaviours.Shipping
                     GameMenu.ExitToLast();
             }
 
-            if (teleportOutside) travel.Party.Position2D = travel.Destination.GatePosition;
+            if (teleportOutside) travel.Party.Position = travel.Destination.GatePosition;
             else EnterSettlementAction.ApplyForParty(party, travel.Destination);
 
-            party.Party.UpdateVisibilityAndInspected(0f);
+            party.Party.UpdateVisibilityAndInspected(party.Position, 0f);
             party.IsActive = true;
             party.Ai.EnableAi();
 
-            party.Party.UpdateVisibilityAndInspected();
+            party.Party.UpdateVisibilityAndInspected(party.Position, 0f);
             RemoveParty(travel.Party);
         }
 
@@ -239,7 +239,7 @@ namespace BannerKings.Behaviours.Shipping
                         
                     if (!port.Notables.Any(x => x.Culture.StringId == lane.Culture.StringId))
                     {
-                        var merchant = lane.Culture.NotableAndWandererTemplates.FirstOrDefault(x => x.Occupation == Occupation.Merchant);
+                        var merchant = lane.Culture.NotableTemplates.FirstOrDefault(x => x.Occupation == Occupation.Merchant);
                         if (merchant != null)
                         {
                             EnterSettlementAction.ApplyForCharacterOnly(HeroCreator
@@ -272,7 +272,7 @@ namespace BannerKings.Behaviours.Shipping
             
             if (town == null) return;
 
-            party.Ai.SetMoveGoToSettlement(town.Settlement);
+            party.SetMoveGoToSettlement(town.Settlement, MobileParty.NavigationType.Default, false);
             if (town.Settlement == settlement || party.CurrentSettlement == null) return;
 
             foreach (ShippingLane lane in lanes)

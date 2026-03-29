@@ -502,16 +502,14 @@ namespace BannerKings.Behaviours
         [HarmonyPatch(typeof(HeirSelectionCampaignBehavior), "OnHeirSelectionOver")]
         internal class OnHeirSelectionOverPatch
         {
-            private static bool Prefix(List<InquiryElement> element)
+            private static void Prefix(Hero selectedHeir)
             {
-                Hero newLeader = element.First<InquiryElement>().Identifier as Hero;
+                Hero newLeader = selectedHeir;
                 var titles = new List<FeudalTitle>(BannerKingsConfig.Instance.TitleManager.GetAllDeJure(Hero.MainHero));
                 if (titles.Count > 0)
                 {
                     BannerKingsConfig.Instance.TitleManager.InheritAllTitles(Hero.MainHero, newLeader);
                 }
-
-                return true;
             }
         }
     }
