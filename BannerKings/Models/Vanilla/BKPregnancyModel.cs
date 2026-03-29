@@ -11,6 +11,11 @@ namespace BannerKings.Models.Vanilla
     {
         public override float GetDailyChanceOfPregnancyForHero(Hero hero)
         {
+            if (hero.Clan == null)
+            {
+                return 0f;
+            }
+
             int num = hero.Children.Count + 1;
             float num2 = (float)(4 + 4 * hero.Clan.Tier);
             int num3 = hero.Clan.AliveLords.Count((Hero x) => x.IsAlive);

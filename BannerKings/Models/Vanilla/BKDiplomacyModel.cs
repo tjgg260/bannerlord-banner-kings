@@ -201,9 +201,12 @@ namespace BannerKings.Models.Vanilla
                 strength -= mercenaryClan.CurrentTotalStrength;
 
             var enemies = kingdom.FactionsAtWarWith;
-            foreach (Kingdom enemy in enemies)
-                result.Add(((enemy.CurrentTotalStrength * 1.1f) - strength) * 0.1f, new TextObject("{=!}War against {KINGDOM}")
-                    .SetTextVariable("KINGDOM", enemy.Name));
+            foreach (IFaction enemy in enemies)
+            {
+                if (enemy.IsKingdomFaction)
+                    result.Add(((enemy.CurrentTotalStrength * 1.1f) - strength) * 0.1f, new TextObject("{=!}War against {KINGDOM}")
+                        .SetTextVariable("KINGDOM", enemy.Name));
+            }
 
             if (enemies.IsEmpty()) result.Add(-20f, new TextObject("{=!}No wars being fought"));
             float baseNumber = MathF.Abs(result.BaseNumber);
@@ -883,7 +886,7 @@ namespace BannerKings.Models.Vanilla
                         .SetTextVariable("FACTION", diplomacy.Kingdom.Name));
                 }
 
-                foreach (Kingdom enemyKingdom in attackerKingdom.FactionsAtWarWith)
+                foreach (Kingdom enemyKingdom in attackerKingdom.FactionsAtWarWith.OfType<Kingdom>())
                 {
                     if (enemyKingdom != attackerKingdom && enemyKingdom != defenderKingdom)
                     {

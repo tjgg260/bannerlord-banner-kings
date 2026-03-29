@@ -433,7 +433,7 @@ namespace BannerKings.Behaviours
                 float randomFloat = MBRandom.RandomFloat;
                 if (caravanParty.MapEvent == null && caravanParty.IsPartyTradeActive && !caravanParty.Ai.DoNotMakeNewDecisions)
                 {
-                    if (caravanParty.CurrentSettlement != null && caravanParty.CurrentSettlement.Town != null)
+                    if (caravanParty.CurrentSettlement != null && caravanParty.CurrentSettlement.IsTown)
                     {
                         if (!caravanParty.CurrentSettlement.IsUnderSiege && caravanParty.ShortTermBehavior != AiBehavior.FleeToPoint && !caravanParty.Ai.IsAlerted && (caravanParty.IsCurrentlyUsedByAQuest || randomFloat < 0.33333334f))
                         {
@@ -473,7 +473,7 @@ namespace BannerKings.Behaviours
                     }
                     if (flag)
                     {
-                        if (caravanParty.CurrentSettlement != null && caravanParty.CurrentSettlement.Town != null)
+                        if (caravanParty.CurrentSettlement != null && caravanParty.CurrentSettlement.IsTown)
                         {
                             Town town = caravanParty.CurrentSettlement.Town;
                             BuyGoods(caravanParty, town);

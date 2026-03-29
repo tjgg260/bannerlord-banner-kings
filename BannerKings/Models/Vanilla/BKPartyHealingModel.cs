@@ -25,6 +25,7 @@ namespace BannerKings.Models.Vanilla
 
         public override ExplainedNumber GetDailyHealingHpForHeroes(PartyBase party, bool isPrisoners, bool includeDescriptions = false)
         {
+            if (party == null) return new ExplainedNumber(0f, includeDescriptions);
             ExplainedNumber result = base.GetDailyHealingHpForHeroes(party, isPrisoners, includeDescriptions);
             Hero leader = party.MobileParty?.LeaderHero;
             if (leader != null && party.Settlement != null)

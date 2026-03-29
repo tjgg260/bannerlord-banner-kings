@@ -234,7 +234,7 @@ namespace BannerKings.Behaviours.Mercenary
             {
                 if (model.WillMercenaryDeclareWar(kingdom, Clan).ResultNumber > 0f)
                 {
-                    foreach (Kingdom enemy in kingdom.FactionsAtWarWith)
+                    foreach (Kingdom enemy in kingdom.FactionsAtWarWith.OfType<Kingdom>())
                     {
                         if (model.GetScoreOfKingdomToHireMercenary(enemy, Clan) > 0f &&
                             model.GetScoreOfMercenaryToJoinKingdom(Clan, enemy) > 0f)

@@ -202,37 +202,16 @@ namespace BannerKings.Patches
             }
         }
 
-        [HarmonyPatch(typeof(DefaultClanFinanceModel))]
+        // Deferred patching: typeof(DefaultClanFinanceModel) must NOT appear in a [HarmonyPatch] attribute
+        // because PatchAll would force the type to load, triggering its static constructor before the
+        // campaign exists. Instead, these patches are applied manually in Main.OnGameStart via
+        // Main.ApplyClanFinancePatches().
         internal class ClanFinancesPatches
         {
-            private static DefaultClanFinanceModel DefaultClanFinanceModel = new DefaultClanFinanceModel();
-            /*private static MethodInfo AddExpensesFromPartiesAndGarrisons => DefaultClanFinanceModel
-                .GetType()
-                .GetMethod("AddExpensesFromPartiesAndGarrisons", BindingFlags.Instance | BindingFlags.NonPublic);
+            private static DefaultClanFinanceModel _defaultClanFinanceModel;
+            private static DefaultClanFinanceModel DefaultClanFinanceModel => _defaultClanFinanceModel ??= new DefaultClanFinanceModel();
 
-            private static MethodInfo AddExpensesForHiredMercenaries => DefaultClanFinanceModel
-                .GetType()
-                .GetMethod("AddExpensesForHiredMercenaries", BindingFlags.Instance | BindingFlags.NonPublic);
-
-            private static MethodInfo AddExpensesForTributes => DefaultClanFinanceModel
-                .GetType()
-                .GetMethod("AddExpensesForTributes", BindingFlags.Instance | BindingFlags.NonPublic);
-
-            private static MethodInfo AddExpensesForAutoRecruitment => DefaultClanFinanceModel
-                .GetType()
-                .GetMethod("AddExpensesForAutoRecruitment", BindingFlags.Instance | BindingFlags.NonPublic);
-
-            private static MethodInfo AddPaymentForDebts => DefaultClanFinanceModel
-                .GetType()
-                .GetMethod("AddPaymentForDebts", BindingFlags.Instance | BindingFlags.NonPublic);
-
-            private static MethodInfo AddPlayerExpenseForWorkshops => DefaultClanFinanceModel
-                .GetType()
-                .GetMethod("AddPlayerExpenseForWorkshops", BindingFlags.Instance | BindingFlags.NonPublic);*/
-
-            [HarmonyPrefix]
-            [HarmonyPatch("CalculateClanExpensesInternal")]
-            private static bool CalculateClanExpensesInternalPrefix(DefaultClanFinanceModel __instance, Clan clan, 
+            internal static bool CalculateClanExpensesInternalPrefix(DefaultClanFinanceModel __instance, Clan clan,
                 ref ExplainedNumber goldChange, bool applyWithdrawals = false, bool includeDetails = false)
             {
                 bool payBudget = clan.Gold > 100000 && clan.Kingdom != null && clan.Leader != Hero.MainHero && !clan.IsUnderMercenaryService;
@@ -303,9 +282,7 @@ namespace BannerKings.Patches
                 return true;
             }
 
-            [HarmonyPrefix]
-            [HarmonyPatch("AddIncomeFromKingdomBudget", MethodType.Normal)]
-            private static bool KingdomBudgetPrefix(Clan clan, ref ExplainedNumber goldChange, bool applyWithdrawals)
+            internal static bool KingdomBudgetPrefix(Clan clan, ref ExplainedNumber goldChange, bool applyWithdrawals)
             {
                 if (BannerKingsConfig.Instance.TitleManager != null)
                 {
@@ -318,9 +295,7 @@ namespace BannerKings.Patches
                 return true;
             }
 
-            [HarmonyPrefix]
-            [HarmonyPatch("AddIncomeFromParty", MethodType.Normal)]
-            private static bool AddIncomeFromPartyPrefix(MobileParty party, Clan clan, ref ExplainedNumber goldChange,
+            internal static bool AddIncomeFromPartyPrefix(MobileParty party, Clan clan, ref ExplainedNumber goldChange,
                 bool applyWithdrawals)
             {
                 if (BannerKingsConfig.Instance.TitleManager != null && party.LeaderHero != null &&
@@ -337,9 +312,7 @@ namespace BannerKings.Patches
                 return true;
             }
 
-            [HarmonyPrefix]
-            [HarmonyPatch("AddExpensesFromPartiesAndGarrisons", MethodType.Normal)]
-            private static bool PartyExpensesPrefix(Clan clan, ref ExplainedNumber goldChange,
+            internal static bool PartyExpensesPrefix(Clan clan, ref ExplainedNumber goldChange,
                 bool applyWithdrawals, bool includeDetails)
             {
                 var model = new DefaultClanFinanceModel();
@@ -462,9 +435,7 @@ namespace BannerKings.Patches
                 return false;
             }
 
-            [HarmonyPrefix]
-            [HarmonyPatch("AddSettlementIncome", MethodType.Normal)]
-            private static bool VillageIncomePrefix(Clan clan, ref ExplainedNumber goldChange, bool applyWithdrawals, bool includeDetails)
+            internal static bool VillageIncomePrefix(Clan clan, ref ExplainedNumber goldChange, bool applyWithdrawals, bool includeDetails)
             {
                 if (BannerKingsConfig.Instance.TitleManager != null)
                 {

@@ -430,7 +430,7 @@ namespace BannerKings.Behaviours.Diplomacy
                 int fiefs = kingdom.Fiefs.Count;
                 
                 float highestStrength = 0f;
-                foreach (Kingdom k in kingdom.FactionsAtWarWith)
+                foreach (IFaction k in kingdom.FactionsAtWarWith)
                 {
                     float enemyStrength = k.CurrentTotalStrength;
                     if (enemyStrength > highestStrength) highestStrength = enemyStrength;

@@ -12,11 +12,13 @@ using BannerKings.Managers.Innovations;
 using BannerKings.Managers.Kingdoms.Policies;
 using BannerKings.Managers.Skills;
 using BannerKings.Models.Vanilla;
+using BannerKings.Patches;
 using BannerKings.Settings;
 using BannerKings.UI;
 using Bannerlord.UIExtenderEx;
 using HarmonyLib;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
@@ -145,7 +147,7 @@ namespace BannerKings
 
             BKAttributes.Instance.Initialize();
             BKSkills.Instance.Initialize();
-            BKPerks.Instance.Initialize();   
+            BKPerks.Instance.Initialize();
             BKPolicies.Instance.Initialize();
             DefaultEras.Instance.Initialize();
             DefaultInnovations.Instance.Initialize();
@@ -156,6 +158,41 @@ namespace BannerKings
 
             UIManager.Instance.SetScreen(new BannerKingsScreen());
             //TaleWorlds.CampaignSystem.Campaign.Current.TournamentManager = new BKTournamentManager();
+
+            ApplyClanFinancePatches();
+        }
+
+        private static bool _clanFinancePatchesApplied;
+
+        private static void ApplyClanFinancePatches()
+        {
+            if (_clanFinancePatchesApplied) return;
+            _clanFinancePatchesApplied = true;
+
+            var harmony = new Harmony("BannerKings");
+            var targetType = typeof(DefaultClanFinanceModel);
+            var patchType = typeof(EconomyPatches.ClanFinancesPatches);
+            var flags = BindingFlags.NonPublic | BindingFlags.Instance;
+
+            harmony.Patch(
+                AccessTools.Method(targetType, "CalculateClanExpensesInternal"),
+                prefix: new HarmonyMethod(patchType, nameof(EconomyPatches.ClanFinancesPatches.CalculateClanExpensesInternalPrefix)));
+
+            harmony.Patch(
+                AccessTools.Method(targetType, "AddIncomeFromKingdomBudget"),
+                prefix: new HarmonyMethod(patchType, nameof(EconomyPatches.ClanFinancesPatches.KingdomBudgetPrefix)));
+
+            harmony.Patch(
+                AccessTools.Method(targetType, "AddIncomeFromParty"),
+                prefix: new HarmonyMethod(patchType, nameof(EconomyPatches.ClanFinancesPatches.AddIncomeFromPartyPrefix)));
+
+            harmony.Patch(
+                AccessTools.Method(targetType, "AddExpensesFromPartiesAndGarrisons"),
+                prefix: new HarmonyMethod(patchType, nameof(EconomyPatches.ClanFinancesPatches.PartyExpensesPrefix)));
+
+            harmony.Patch(
+                AccessTools.Method(targetType, "AddSettlementIncome"),
+                prefix: new HarmonyMethod(patchType, nameof(EconomyPatches.ClanFinancesPatches.VillageIncomePrefix)));
         }
 
         private static readonly FieldInfo GameTextManagerField =

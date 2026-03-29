@@ -618,7 +618,7 @@ namespace BannerKings.Behaviours
     
                     uint color1 = 0;
                     uint color2 = 0;
-                    foreach (Kingdom kingdom in rebel.FactionsAtWarWith)
+                    foreach (Kingdom kingdom in rebel.FactionsAtWarWith.OfType<Kingdom>())
                     {
                         Campaign.Current.GetCampaignBehavior<BKDiplomacyBehavior>().TriggerRebelWar(clan.Kingdom,
                             kingdom,

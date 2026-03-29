@@ -241,10 +241,10 @@ namespace BannerKings.Behaviours
 
         private void TryBuyingFood(MobileParty mobileParty, Settlement settlement)
         {
-            if (TaleWorlds.CampaignSystem.Campaign.Current.GameStarted && mobileParty.LeaderHero != null && settlement.IsCastle && 
-                TaleWorlds.CampaignSystem.Campaign.Current.Models.MobilePartyFoodConsumptionModel.DoesPartyConsumeFood(mobileParty) && 
-                (mobileParty.Army == null || mobileParty.Army.LeaderParty == mobileParty) && 
-                (settlement.IsVillage || (mobileParty.MapFaction != null && !mobileParty.MapFaction.IsAtWarWith(settlement.MapFaction))) && 
+            if (TaleWorlds.CampaignSystem.Campaign.Current.GameStarted && mobileParty.LeaderHero != null && !settlement.IsCastle &&
+                TaleWorlds.CampaignSystem.Campaign.Current.Models.MobilePartyFoodConsumptionModel.DoesPartyConsumeFood(mobileParty) &&
+                (mobileParty.Army == null || mobileParty.Army.LeaderParty == mobileParty) &&
+                (settlement.IsVillage || (mobileParty.MapFaction != null && !mobileParty.MapFaction.IsAtWarWith(settlement.MapFaction))) &&
                 settlement.ItemRoster.TotalFood > 0)
             {
                 PartyFoodBuyingModel partyFoodBuyingModel = TaleWorlds.CampaignSystem.Campaign.Current.Models.PartyFoodBuyingModel;
@@ -272,7 +272,7 @@ namespace BannerKings.Behaviours
                     }
                     if (num <= (float)mobileParty.LeaderHero.Gold)
                     {
-                        SellItemsAction.Apply(settlement.Party, mobileParty.Party, subject, 1, null);
+                        SellItemsAction.Apply(settlement.Party, mobileParty.Party, subject, 1, settlement);
                     }
                     if (subject.EquipmentElement.Item.HasHorseComponent && subject.EquipmentElement.Item.HorseComponent.IsLiveStock)
                     {
