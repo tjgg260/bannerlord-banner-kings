@@ -23,6 +23,7 @@ using BannerKings.Managers.Innovations.Eras;
 using BannerKings.Behaviours.Innovations;
 using BannerKings.Behaviours.Shipping;
 using BannerKings.Behaviours.Relations;
+using BannerKings.Behaviours.Streaming;
 
 namespace BannerKings
 {
@@ -162,6 +163,16 @@ namespace BannerKings
             new Harmony("BannerKings").PatchAll();
             Xtender.Register(typeof(Main).Assembly);
             Xtender.Enable();
+        }
+
+        public override void OnMissionBehaviorInitialize(Mission mission)
+        {
+            base.OnMissionBehaviorInitialize(mission);
+            StreamingRegion region = StreamingRegions.GetForScene(mission.SceneName);
+            if (region != null)
+            {
+                mission.AddMissionBehavior(new TerrainStreamingBehavior(region));
+            }
         }
 
         public override void OnGameEnd(Game game)
